@@ -1,0 +1,6 @@
+[submodule "mem0"]
+	path = mem0
+	url = git@github.com:mem0ai/mem0.git
+[submodule "letta"]
+	path = letta
+	url = git@github.com:letta-ai/letta.git
