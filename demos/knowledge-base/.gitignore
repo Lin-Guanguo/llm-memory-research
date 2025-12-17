@@ -1,0 +1,9 @@
+# Environment
+.env
+
+# Data storage
+data/
+
+# Python
+__pycache__/
+*.pyc
