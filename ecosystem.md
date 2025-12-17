@@ -2,20 +2,55 @@
 
 Last Updated: 2025-12-18
 
-> **Research Methodology**: Combined Claude Code analysis + Gemini CLI internet search
+> **Research Methodology**: Combined Claude Code analysis + Gemini CLI internet search (Dec 2025)
+
+---
+
+## 0. Market Analysis Summary
+
+### Research Status in This Project
+
+| Project | Status | Research File |
+|---------|--------|---------------|
+| **Mem0** | ✅ Researched | `mem0.research.md` |
+| **Letta** | ✅ Researched | `letta.research.md` |
+| **Cursor** | ✅ Researched | `cursor.research.md` |
+| **Augment Code** | ✅ Researched | `augmentcode.research.md` |
+| **Zep + Graphiti** | 🔴 Not yet | High priority |
+| **Continue** | 🔴 Not yet | High priority |
+| **Qdrant** | 🔴 Not yet | Medium priority |
+| **Chroma** | 🔴 Not yet | Medium priority |
+
+### Research Priority Recommendations
+
+| Priority | Project | GitHub Stars | Funding | Reason |
+|----------|---------|--------------|---------|--------|
+| 🔥 **1** | **Zep + Graphiti** | ~21.2k | $2.3M (YC) | Temporal knowledge graph - new direction in 2025 |
+| 🔥 **2** | **Continue** | **30.4k** | **$65M Series A** | Open source coding assistant market leader |
+| ⭐ **3** | **Qdrant** | 27.7k | $37.8M | Production-scale vector DB leader |
+| ⭐ **4** | **Chroma** | 24k | $36M | Developer experience leader, Rust rewrite v1.0 (Mar 2025) |
+| ○ **5** | **Tabby** | 11k | $7.2M | Self-hosted alternative (Continue is leader) |
+| ○ **6** | **Void** | - | - | Privacy-first, new project |
+
+### Key 2025 Insight
+
+> **Industry shift**: From pure vector similarity → **Knowledge Graphs + Temporal Awareness**
+>
+> Graphiti's 21.2k stars (vs Zep core's 3.8k) shows massive developer interest in graph-based memory.
 
 ---
 
 ## 1. Memory Frameworks
 
-| Project | Type | Core Technology | 2025 Updates | Link |
-|---------|------|-----------------|--------------|------|
-| **Mem0** | Open Source | LLM-driven fact extraction + Vector/Graph dual storage | **Mem0g** - Graph database for relational reasoning | [GitHub](https://github.com/mem0ai/mem0) |
-| **Letta** (MemGPT) | Open Source | Three-tier memory + Agent self-editing prompts | Supports "infinite context" chatbots | [GitHub](https://github.com/letta-ai/letta) |
-| **Zep** | Open Source | Long-term memory + Auto-summarization + Entity extraction | **Graphiti** temporal knowledge graph engine | [GitHub](https://github.com/getzep/zep) |
-| **LangChain Memory** | Open Source | Multiple Memory types (Buffer, Summary, VectorStore) | Most complete ecosystem, but generic | [GitHub](https://github.com/langchain-ai/langchain) |
-| **LlamaIndex** | Open Source | Data indexing framework, multiple storage backends | Best for RAG scenarios | [GitHub](https://github.com/run-llama/llama_index) |
-| **Motorhead** | Open Source | Memory server with Redis backend | Lightweight option | [GitHub](https://github.com/getmetal/motorhead) |
+| Project | Type | GitHub Stars | Funding | Core Technology | 2025 Updates | Link |
+|---------|------|--------------|---------|-----------------|--------------|------|
+| **Mem0** | Open Source | ~23k | $2.2M | LLM-driven fact extraction + Vector/Graph dual storage | **Mem0g** - Graph database for relational reasoning | [GitHub](https://github.com/mem0ai/mem0) |
+| **Letta** (MemGPT) | Open Source | ~15k | $10M | Three-tier memory + Agent self-editing prompts | Supports "infinite context" chatbots | [GitHub](https://github.com/letta-ai/letta) |
+| **Zep** | Open Source | ~3.8k (core) | $2.3M (YC) | Long-term memory + Auto-summarization + Entity extraction | **Graphiti** temporal knowledge graph engine | [GitHub](https://github.com/getzep/zep) |
+| **Graphiti** | Open Source | **~21.2k** | (see Zep) | Temporal knowledge graph engine | **Breakout hit** - massive adoption in 2025 | [GitHub](https://github.com/getzep/graphiti) |
+| **LangChain Memory** | Open Source | (part of LangChain) | $35M+ | Multiple Memory types (Buffer, Summary, VectorStore) | Most complete ecosystem, but generic | [GitHub](https://github.com/langchain-ai/langchain) |
+| **LlamaIndex** | Open Source | ~38k | $19M | Data indexing framework, multiple storage backends | Best for RAG scenarios | [GitHub](https://github.com/run-llama/llama_index) |
+| **Motorhead** | Open Source | ~0.5k | - | Memory server with Redis backend | Lightweight option, less active | [GitHub](https://github.com/getmetal/motorhead) |
 
 ### Selection Guide
 
@@ -30,60 +65,62 @@ Last Updated: 2025-12-18
 
 ## 2. AI Coding Assistants (Codebase Indexing)
 
-| Project | Type | Core Technology | Highlights | Link |
-|---------|------|-----------------|------------|------|
-| **Cursor** | Commercial | AST + Symbol graph + Semantic embeddings | 2025 benchmark, custom embedding models | [cursor.com](https://cursor.com) |
-| **Augment Code** | Commercial | Context Engine + Real-time personal index | Per-developer index, sub-second updates | [augmentcode.com](https://augmentcode.com) |
-| **Void** | Open Source | Cursor-like features | **Privacy-first**, runs locally or with your own API keys | [voideditor.com](https://voideditor.com) |
-| **Continue** | Open Source | Customizable Context Providers | Supports local LLMs (Ollama), highly configurable | [GitHub](https://github.com/continuedev/continue) |
-| **Tabby** | Open Source | RAG + repo-context indexing | Self-hosted Copilot alternative | [GitHub](https://github.com/TabbyML/tabby) |
-| **Aider** | Open Source | Git-aware multi-file editing | Terminal tool, ideal for CLI users | [GitHub](https://github.com/paul-gauthier/aider) |
-| **Sourcegraph Cody** | Open Source | Enterprise code search | Cross-repository search support | [GitHub](https://github.com/sourcegraph/cody) |
-| **CocoIndex** | Open Source | **Tree-sitter** syntax-aware chunking | Chunks by function/class, live index updates | [GitHub](https://github.com/cocoindex/cocoindex) |
+| Project | Type | GitHub Stars | Funding | Core Technology | Market Position | Link |
+|---------|------|--------------|---------|-----------------|-----------------|------|
+| **Cursor** | Commercial | - | $400M+ (Series B) | AST + Symbol graph + Semantic embeddings | **Commercial benchmark**, custom embedding models | [cursor.com](https://cursor.com) |
+| **Augment Code** | Commercial | - | $252M | Context Engine + Real-time personal index | **Enterprise leader**, per-developer index | [augmentcode.com](https://augmentcode.com) |
+| **Continue** | Open Source | **30.4k** | **$65M Series A** | Customizable Context Providers | **Open source leader**, $500M valuation | [GitHub](https://github.com/continuedev/continue) |
+| **Tabby** | Open Source | 11k | $7.2M | RAG + repo-context indexing | Self-hosted Copilot alternative | [GitHub](https://github.com/TabbyML/tabby) |
+| **Aider** | Open Source | ~25k | - | Git-aware multi-file editing | CLI tool leader | [GitHub](https://github.com/paul-gauthier/aider) |
+| **Sourcegraph Cody** | Open Source | ~3k | $225M (company) | Enterprise code search | Cross-repository search | [GitHub](https://github.com/sourcegraph/cody) |
+| **Void** | Open Source | ~5k | - | Cursor-like features | **Privacy-first**, new entrant | [voideditor.com](https://voideditor.com) |
+| **CocoIndex** | Open Source | ~1k | - | **Tree-sitter** syntax-aware chunking | Niche: syntax-aware indexing | [GitHub](https://github.com/cocoindex/cocoindex) |
 
 ### Selection Guide
 
-| Use Case | Recommendation |
-|----------|----------------|
-| Privacy-first open source | Void |
-| Highly configurable | Continue |
-| Self-hosted enterprise | Tabby |
-| Syntax-aware indexing | CocoIndex |
-| CLI users | Aider |
+| Use Case | Recommendation | Notes |
+|----------|----------------|-------|
+| Open source IDE extension | **Continue** | Market leader, $65M funding |
+| Privacy-first | Void | Runs locally with your own API keys |
+| Self-hosted enterprise | Tabby | $7.2M funding, enterprise focus |
+| CLI workflow | Aider | Git-aware, terminal-native |
+| Syntax-aware indexing | CocoIndex | Tree-sitter chunking by function/class |
 
 ---
 
 ## 3. Vector Databases
 
-| Project | Language | 2025 Features | Best For | Link |
-|---------|----------|---------------|----------|------|
-| **Qdrant** | Rust | High performance + Payload filtering (user_id, timestamp) | Production, low latency at scale | [GitHub](https://github.com/qdrant/qdrant) |
-| **Chroma** | Python | Zero config, in-memory/persistent modes | Prototyping, quick start | [GitHub](https://github.com/chroma-core/chroma) |
-| **Weaviate** | Go | **Hybrid search** (BM25 + vector) | Code search (exact variable matching) | [GitHub](https://github.com/weaviate/weaviate) |
-| **Milvus** | Go | Distributed, billion-scale vectors | Large-scale production | [GitHub](https://github.com/milvus-io/milvus) |
-| **pgvector** | C | PostgreSQL extension, ACID transactions | Teams already using Postgres | [GitHub](https://github.com/pgvector/pgvector) |
-| **Pinecone** | Commercial | Fully managed, zero ops | No infrastructure management | [pinecone.io](https://pinecone.io) |
+| Project | Language | GitHub Stars | Funding | 2025 Features | Market Position | Link |
+|---------|----------|--------------|---------|---------------|-----------------|------|
+| **Qdrant** | Rust | **27.7k** | **$37.8M** | High performance + Payload filtering | **Production leader**, 2025 AI TechAward, Cloud Inference (Jul 2025) | [GitHub](https://github.com/qdrant/qdrant) |
+| **Chroma** | Rust (v1.0) | 24k | $36M | Zero config, in-memory/persistent | **DevEx leader**, Rust rewrite v1.0 (Mar 2025), 90k+ integrations | [GitHub](https://github.com/chroma-core/chroma) |
+| **Weaviate** | Go | ~13k | $50M | **Hybrid search** (BM25 + vector) | Best for code search (exact variable matching) | [GitHub](https://github.com/weaviate/weaviate) |
+| **Milvus** | Go | ~32k | $113M | Distributed, billion-scale vectors | Large-scale production leader | [GitHub](https://github.com/milvus-io/milvus) |
+| **pgvector** | C | ~13k | - | PostgreSQL extension, ACID | Unified database for Postgres users | [GitHub](https://github.com/pgvector/pgvector) |
+| **Pinecone** | Commercial | - | $138M | Fully managed, zero ops | Managed service leader | [pinecone.io](https://pinecone.io) |
 
 ### Selection Guide
 
-| Use Case | Recommendation |
-|----------|----------------|
-| Production performance | Qdrant |
-| Quick prototyping | Chroma |
-| Code search | Weaviate (hybrid search) |
-| Unified database | pgvector |
-| Large-scale distributed | Milvus |
+| Use Case | Recommendation | Notes |
+|----------|----------------|-------|
+| Production performance | **Qdrant** | $37.8M funding, Rust-based, lowest latency |
+| Quick prototyping | **Chroma** | DevEx focus, zero config, Rust v1.0 |
+| Code search | Weaviate | Hybrid search for exact variable names |
+| Unified database | pgvector | No new infrastructure if using Postgres |
+| Billion-scale | Milvus | $113M funding, distributed architecture |
 
 ---
 
 ## 4. Graph Databases (Knowledge Graphs)
 
-| Project | Type | Highlights | Link |
-|---------|------|------------|------|
-| **Neo4j** | Commercial/Community | Most mature graph database | [neo4j.com](https://neo4j.com) |
-| **Memgraph** | Open Source | In-memory first, high performance | [GitHub](https://github.com/memgraph/memgraph) |
-| **Kuzu** | Open Source | Embedded graph database | [GitHub](https://github.com/kuzudb/kuzu) |
-| **Graphiti** | Open Source | Zep's temporal knowledge graph engine | [GitHub](https://github.com/getzep/graphiti) |
+| Project | Type | GitHub Stars | Highlights | LLM Memory Use Case | Link |
+|---------|------|--------------|------------|---------------------|------|
+| **Graphiti** | Open Source | **~21.2k** | Zep's temporal knowledge graph engine | **LLM-native**, designed for agent memory | [GitHub](https://github.com/getzep/graphiti) |
+| **Neo4j** | Commercial/Community | ~14k | Most mature graph database | General-purpose, not LLM-specialized | [neo4j.com](https://neo4j.com) |
+| **Memgraph** | Open Source | ~1k | In-memory first, high performance | Real-time graph analytics | [GitHub](https://github.com/memgraph/memgraph) |
+| **Kuzu** | Open Source | ~1.5k | Embedded graph database | Local/embedded use cases | [GitHub](https://github.com/kuzudb/kuzu) |
+
+> **Note**: Graphiti's 21.2k stars significantly outpace traditional graph DBs for LLM use cases, indicating strong developer preference for LLM-native solutions.
 
 ---
 
@@ -115,14 +152,29 @@ Last Updated: 2025-12-18
 
 ## 7. Recommended for Further Research
 
-Based on existing research in this project (mem0, letta, augment, cursor):
+Based on existing research (mem0, letta, augment, cursor) and market analysis:
 
-| Project | Research Value |
-|---------|----------------|
-| **[Zep + Graphiti](https://github.com/getzep/graphiti)** | Temporal knowledge graph is a new direction |
-| **[Continue](https://github.com/continuedev/continue)** | Most active open source coding assistant |
-| **[Void](https://voideditor.com)** | Privacy-first Cursor alternative |
-| **[CocoIndex](https://github.com/cocoindex/cocoindex)** | Tree-sitter syntax-aware indexing |
+### High Priority (New Technical Direction or Market Leader)
+
+| Project | GitHub Stars | Funding | Why Research |
+|---------|--------------|---------|--------------|
+| **[Zep + Graphiti](https://github.com/getzep/graphiti)** | 21.2k | $2.3M (YC) | **Temporal knowledge graph** - 2025's new direction for agent memory |
+| **[Continue](https://github.com/continuedev/continue)** | 30.4k | $65M | **Open source IDE market leader**, $500M valuation |
+
+### Medium Priority (Infrastructure Leaders)
+
+| Project | GitHub Stars | Funding | Why Research |
+|---------|--------------|---------|--------------|
+| **[Qdrant](https://github.com/qdrant/qdrant)** | 27.7k | $37.8M | Production vector DB leader, Rust performance |
+| **[Chroma](https://github.com/chroma-core/chroma)** | 24k | $36M | DevEx leader, Rust v1.0 rewrite |
+
+### Optional (Niche or Less Differentiated)
+
+| Project | GitHub Stars | Notes |
+|---------|--------------|-------|
+| **[Tabby](https://github.com/TabbyML/tabby)** | 11k | Self-hosted alternative, but Continue is leader |
+| **[Void](https://voideditor.com)** | ~5k | Privacy-first, too new to assess |
+| **[CocoIndex](https://github.com/cocoindex/cocoindex)** | ~1k | Tree-sitter niche, small community |
 
 ---
 
