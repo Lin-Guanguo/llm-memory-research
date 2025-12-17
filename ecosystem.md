@@ -19,7 +19,7 @@ Last Updated: 2025-12-18
 | **Zep + Graphiti** | ✅ Researched | `graphiti.research.md` |
 | **Continue** | ✅ Researched | `continue.research.md` |
 | **Qdrant** | ✅ Researched | `qdrant.research.md` |
-| **Chroma** | 🔴 Not yet | Medium priority |
+| **Chroma** | ✅ Researched | `chroma.research.md` |
 
 ### Research Priority Recommendations
 
