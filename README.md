@@ -6,6 +6,8 @@ A personal research project for studying and experimenting with LLM memory imple
 
 This repository explores how large language models can maintain long-term memory, enabling more personalized and context-aware AI interactions.
 
+**[summary.md](./summary.md)** - Key findings from reverse-engineering ChatGPT, Claude, and AI coding CLI memory systems, And letta, mem0 this two open source memeory system.
+
 ## Directory Structure
 
 ### Submodules
