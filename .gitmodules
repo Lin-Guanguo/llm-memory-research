@@ -4,3 +4,6 @@
 [submodule "letta"]
 	path = letta
 	url = git@github.com:letta-ai/letta.git
+[submodule "graphiti"]
+	path = graphiti
+	url = https://github.com/getzep/graphiti.git

@@ -16,7 +16,7 @@ Last Updated: 2025-12-18
 | **Letta** | ✅ Researched | `letta.research.md` |
 | **Cursor** | ✅ Researched | `cursor.research.md` |
 | **Augment Code** | ✅ Researched | `augmentcode.research.md` |
-| **Zep + Graphiti** | 🔴 Not yet | High priority |
+| **Zep + Graphiti** | ✅ Researched | `graphiti.research.md` |
 | **Continue** | 🔴 Not yet | High priority |
 | **Qdrant** | 🔴 Not yet | Medium priority |
 | **Chroma** | 🔴 Not yet | Medium priority |
