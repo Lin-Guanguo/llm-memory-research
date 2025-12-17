@@ -2,6 +2,8 @@
 
 Last Updated: 2025-12-17
 
+> **Research Methodology**: This document was generated through collaborative code repository analysis by Claude Code, Gemini CLI, and Codex CLI, with final summarization by Claude Code.
+
 ## Overview
 
 **mem0** is an open-source memory layer for LLM applications that goes beyond traditional RAG systems. It provides a self-improving, adaptive memory system that actively manages user, session, and agent states through LLM-driven fact extraction and conflict resolution.

@@ -2,6 +2,8 @@
 
 Last Updated: 2025-12-17
 
+> **Research Methodology**: This document was generated through collaborative code repository analysis by Claude Code, Gemini CLI, and Codex CLI, with final summarization by Claude Code.
+
 ## Overview
 
 **Letta** (formerly MemGPT) is an open-source framework that transforms stateless LLMs into stateful agents with persistent memory. Based on the MemGPT paper's "LLM Operating System" principles, it implements a hierarchical memory system with virtual context management, enabling unbounded context through intelligent paging.
