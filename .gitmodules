@@ -7,3 +7,6 @@
 [submodule "graphiti"]
 	path = graphiti
 	url = https://github.com/getzep/graphiti.git
+[submodule "continue"]
+	path = continue
+	url = https://github.com/continuedev/continue.git

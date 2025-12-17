@@ -17,7 +17,7 @@ Last Updated: 2025-12-18
 | **Cursor** | ✅ Researched | `cursor.research.md` |
 | **Augment Code** | ✅ Researched | `augmentcode.research.md` |
 | **Zep + Graphiti** | ✅ Researched | `graphiti.research.md` |
-| **Continue** | 🔴 Not yet | High priority |
+| **Continue** | ✅ Researched | `continue.research.md` |
 | **Qdrant** | 🔴 Not yet | Medium priority |
 | **Chroma** | 🔴 Not yet | Medium priority |
 
