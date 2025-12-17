@@ -88,11 +88,49 @@ Reverse-engineered local storage of Claude Code, Codex (OpenAI), and Gemini CLI.
 
 ### mem0
 
-TODO
+**Core Innovation:** Active memory management via LLM-driven fact extraction and conflict resolution.
+
+**Architecture:**
+- **Two-Stage LLM Pipeline**: Extract facts → Compare with existing → Decide ADD/UPDATE/DELETE
+- **Dual Storage**: Vector store (semantic search) + Graph store (relationships) in parallel
+- **Session Scoping**: `user_id`, `agent_id`, `run_id` for multi-tenant isolation
+
+**Key Differentiators from RAG:**
+| Aspect | Traditional RAG | mem0 |
+|--------|----------------|------|
+| Storage Unit | Document chunks | Atomic facts |
+| Updates | Append-only | Active CRUD |
+| Deduplication | Vector distance | LLM reasoning |
+
+**Ecosystem:**
+- 24+ vector stores (Qdrant, Pinecone, PGVector, FAISS, etc.)
+- 20+ LLMs (OpenAI, Anthropic, Gemini, Ollama, etc.)
+- Graph support via Neo4j, Memgraph, Neptune
+
+**Detailed analysis:** [mem0.research.md](mem0.research.md)
 
 ### Letta (MemGPT)
 
-TODO
+**Core Innovation:** LLM Operating System with self-editing memory and virtual context management.
+
+**Architecture:**
+- **Three-Tier Memory**: Core (always in-context) → Recall (searchable history) → Archival (vector storage)
+- **Self-Editing**: Agent writes to its own prompt via tools (`core_memory_replace`, `archival_memory_insert`)
+- **Virtual Context**: Summarization + paging creates illusion of infinite context window
+
+**Key Differentiators from RAG:**
+| Aspect | Standard RAG | Letta |
+|--------|--------------|-------|
+| Retrieval | Passive (before LLM) | Active (LLM decides when) |
+| Memory | Read-only | Read/Write (self-editing) |
+| State | Stateless | Stateful (persistent identity) |
+
+**Agent Types:**
+- `memgpt_agent` - Original MemGPT implementation
+- `letta_v1_agent` - Simplified, no forced tool calls
+- `sleeptime_agent` - Background memory management
+
+**Detailed analysis:** [letta.research.md](letta.research.md)
 
 ---
 
@@ -107,6 +145,8 @@ TODO
 4. **Local storage varies widely**: From Gemini's minimal 3-type JSON to Codex's 10+ event types, complexity reflects different priorities.
 
 5. **Memory management is mostly explicit**: All systems rely heavily on explicit user commands ("remember this") rather than fully autonomous memory extraction.
+
+6. **Open-source frameworks differ fundamentally**: mem0 focuses on LLM-driven fact extraction with dual storage (vector + graph), while Letta implements OS-inspired virtual memory with self-editing capabilities.
 
 ---
 
