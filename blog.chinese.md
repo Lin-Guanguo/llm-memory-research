@@ -2,7 +2,9 @@
 
 Last Updated: 2025-12-28
 
-> 大语言模型正在从"无状态对话"走向"有记忆的智能体"。这篇文章分享我对当前 LLM 记忆系统的调研发现，涵盖：**开源记忆框架**（Mem0/Letta/Graphiti）、**向量数据库**（Qdrant/Chroma）、**编程助手**（Cursor/Augment/Continue）、**ChatGPT 与 Claude 的记忆逆向工程**、**Agent CLI 工具分析**，以及**生产落地的真实现状**。
+> 调研 LLM 记忆系统时发现了一些有趣的事：ChatGPT 和 Claude 的记忆实现思路完全相反——一个始终注入，一个按需检索。更意外的是，Claude Code、Codex、Gemini 这些 Agent CLI 工具，记忆方案比想象中简单太多——没有 RAG，没有知识图谱，就是朴素的滑动窗口。这篇文章整理了开源框架、向量库、编程助手、以及生产落地的真实现状。
+
+本文涵盖：**开源记忆框架**（Mem0/Letta/Graphiti）、**向量数据库**（Qdrant/Chroma）、**编程助手**（Cursor/Augment/Continue）、**ChatGPT 与 Claude 的记忆逆向工程**、**Agent CLI 工具分析**，以及**生产落地的真实现状**。
 
 ---
 
