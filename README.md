@@ -1,71 +1,80 @@
-# LLM Memory Research
+# LLM Agent Research
 
-Last Updated: 2025-12-28
+Last Updated: 2026-03-19
 
-A systematic research project studying LLM memory implementations across frameworks, products, and agent CLI tools.
+A systematic research project studying LLM agent internals: memory implementations and context management across frameworks, products, and agent CLI tools.
 
 ---
 
-## Quick Navigation
+## Research Directions
 
-| Document | Description |
-|----------|-------------|
-| **[production-adoption.research.md](./production-adoption.research.md)** | **Production adoption research (Gemini internet search)** - Real-world deployment cases |
-| **[ecosystem.md](./ecosystem.md)** | Market overview with GitHub stars, funding, and research priorities |
-| **[summary.md](./summary.md)** | Key findings from reverse-engineering ChatGPT, Claude, and open-source memory systems |
+1. **Memory** — How agents persist and retrieve knowledge across conversations
+2. **Context** — How agents assemble and manage context within a conversation (token generation, prompt stitching, token budgeting)
 
 ---
 
 ## Repository Structure
 
 ```
-llm-memory-research/
-├── Research Documents (Root)
-│   ├── production-adoption.research.md   # Production deployment cases
-│   ├── ecosystem.md                       # Market analysis & priorities
-│   └── summary.md                         # Reverse-engineering findings
+llm-agent-research/
+├── plan/                                    # Research plans
+│   └── 1-context-research.md                # Context research plan & steps
 │
-├── Technical Research (*.research.md)
-│   ├── mem0.research.md                   # Mem0: LLM-driven CRUD memory
-│   ├── letta.research.md                  # Letta: Three-tier self-editing memory
-│   ├── graphiti.research.md               # Graphiti: Bi-temporal knowledge graph
-│   ├── qdrant.research.md                 # Qdrant: Filtrable HNSW vector DB
-│   ├── chroma.research.md                 # Chroma: Developer-friendly vector DB
-│   ├── continue.research.md               # Continue: Open-source coding assistant
-│   ├── cursor.research.md                 # Cursor: Custom embedding training
-│   └── augmentcode.research.md            # Augment: Real-time personal index
+├── Memory Research (*.research.md)
+│   ├── production-adoption.research.md      # Production deployment cases
+│   ├── ecosystem.md                         # Market analysis & priorities
+│   ├── summary.md                           # Reverse-engineering findings
+│   ├── mem0.research.md                     # Mem0: LLM-driven CRUD memory
+│   ├── letta.research.md                    # Letta: Three-tier self-editing memory
+│   ├── graphiti.research.md                 # Graphiti: Bi-temporal knowledge graph
+│   ├── qdrant.research.md                   # Qdrant: Filtrable HNSW vector DB
+│   ├── chroma.research.md                   # Chroma: Developer-friendly vector DB
+│   ├── continue.research.md                 # Continue: Open-source coding assistant
+│   ├── cursor.research.md                   # Cursor: Custom embedding training
+│   └── augmentcode.research.md              # Augment: Real-time personal index
 │
-├── reverse-engineer/                      # ChatGPT & Claude memory reverse-engineering
+├── Context Research
+│   ├── pi.research.md                        # Pi: Minimal agent loop & compaction
+│   ├── openclaw.research.md                  # OpenClaw: Pluggable ContextEngine
+│   ├── gemini-cli.research.md                # Gemini CLI: Context management (open source)
+│   ├── (TBD) claude-code-context.research.md  # Claude Code: Reverse engineering
+│   └── (TBD) codex-context.research.md      # Codex: Reverse engineering
+│
+├── reverse-engineer/                        # Product reverse-engineering
 │   ├── chatgpt-memory-reverse-engineering.md
 │   └── claude-memory-reverse-engineering.md
 │
-├── agent-cli/                             # Agent CLI session file analysis
-│   ├── agent-files-analysis.md            # Cross-tool comparison
-│   ├── claude-session-files.md            # Claude Code session structure
-│   ├── codex-session-files.md             # Codex session structure
-│   ├── gemini-session-files.md            # Gemini CLI session structure
-│   └── *-session-file-schema.md           # Detailed JSON schemas
+├── agent-cli/                               # Agent CLI session file analysis
+│   ├── agent-files-analysis.md              # Cross-tool comparison
+│   ├── claude-session-files.md              # Claude Code session structure
+│   ├── codex-session-files.md               # Codex session structure
+│   ├── gemini-session-files.md              # Gemini CLI session structure
+│   └── *-session-file-schema.md             # Detailed JSON schemas
 │
 ├── Git Submodules (Source Code)
-│   ├── mem0/                              # github.com/mem0ai/mem0
-│   ├── letta/                             # github.com/letta-ai/letta
-│   ├── graphiti/                          # github.com/getzep/graphiti
-│   └── continue/                          # github.com/continuedev/continue
+│   ├── mem0/                                # github.com/mem0ai/mem0
+│   ├── letta/                               # github.com/letta-ai/letta
+│   ├── graphiti/                            # github.com/getzep/graphiti
+│   ├── continue/                            # github.com/continuedev/continue
+│   ├── pi-mono/                              # github.com/badlogic/pi-mono
+│   ├── openclaw/                             # github.com/openclaw/openclaw
+│   └── gemini-cli/                           # github.com/google-gemini/gemini-cli
 │
-└── demos/                                 # Experimental implementations
-    └── knowledge-base/                    # ChromaDB vector search demo
+├── blog.chinese.md                          # Chinese blog post
+└── demos/                                   # Experimental implementations
+    └── knowledge-base/                      # ChromaDB vector search demo
 ```
 
 ---
 
-## Research Documents Index
+## Memory Research Index
 
 ### Summary & Analysis
 
 | File | Content |
 |------|---------|
-| `production-adoption.research.md` | **Gemini internet search results** on real-world adoption: Mem0 (AWS SDK), Letta (11x, Kognitos), Graphiti (Zep AI), dual-memory architecture patterns |
-| `ecosystem.md` | GitHub stars, funding data, market segmentation, research priority recommendations |
+| `production-adoption.research.md` | Real-world adoption: Mem0 (AWS SDK), Letta (11x, Kognitos), Graphiti (Zep AI) |
+| `ecosystem.md` | GitHub stars, funding data, market segmentation, research priorities |
 | `summary.md` | Consolidated findings from reverse-engineering and open-source analysis |
 
 ### Memory Frameworks
@@ -106,6 +115,27 @@ llm-memory-research/
 | `agent-cli/claude-session-files.md` | Claude Code: `~/.claude/` structure, JSONL format, plaintext compression |
 | `agent-cli/codex-session-files.md` | Codex: `~/.codex/` structure, encrypted JWT compression |
 | `agent-cli/gemini-session-files.md` | Gemini: `~/.gemini/` structure, server-side compression |
+
+---
+
+## Context Research Index
+
+### Open Source Agents
+
+| File | Project | Key Finding |
+|------|---------|-------------|
+| `pi.research.md` | [Pi](https://github.com/badlogic/pi-mono) | Minimal: infinite accumulate → single LLM summary compaction. No pre-send processing, no token budgeting. ~300 word system prompt. Subagent via extension (process isolation) |
+| `openclaw.research.md` | [OpenClaw](https://github.com/openclaw/openclaw) | Multi-stage pipeline: sanitize → validate → truncate → assemble. Pluggable ContextEngine (7 lifecycle hooks). Per-provider turn validation. Built-in subagent via gateway RPC (bidirectional) |
+| `gemini-cli.research.md` | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Two-pass verified compression (generate + probe). Tool output pre-summarization with reverse token budget. 50% threshold (aggressive). In-process subagents with fresh chat instance |
+
+### Reverse Engineering (Planned)
+
+| File | Project | Status |
+|------|---------|--------|
+| `claude-code-context.research.md` | Claude Code | TBD |
+| `codex-context.research.md` | Codex | TBD |
+
+See [plan/1-context-research.md](./plan/1-context-research.md) for detailed research plan.
 
 ---
 
