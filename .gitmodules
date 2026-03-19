@@ -19,3 +19,9 @@
 [submodule "gemini-cli"]
 	path = gemini-cli
 	url = https://github.com/google-gemini/gemini-cli.git
+[submodule "claude-code-system-prompts"]
+	path = claude-code-system-prompts
+	url = git@github.com:Piebald-AI/claude-code-system-prompts.git
+[submodule "codex-cli"]
+	path = codex-cli
+	url = https://github.com/openai/codex.git

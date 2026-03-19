@@ -37,8 +37,8 @@ llm-agent-research/
 │   ├── pi.research.md                        # Pi: Minimal agent loop & compaction
 │   ├── openclaw.research.md                  # OpenClaw: Pluggable ContextEngine
 │   ├── gemini-cli.research.md                # Gemini CLI: Context management (open source)
-│   ├── (TBD) claude-code-context.research.md  # Claude Code: Reverse engineering
-│   └── (TBD) codex-context.research.md      # Codex: Reverse engineering
+│   ├── claude-code-context.research.md        # Claude Code: Server-side compaction + context awareness
+│   └── codex-context.research.md             # Codex: Dual compaction + per-item truncation
 │
 ├── reverse-engineer/                        # Product reverse-engineering
 │   ├── chatgpt-memory-reverse-engineering.md
@@ -58,7 +58,8 @@ llm-agent-research/
 │   ├── continue/                            # github.com/continuedev/continue
 │   ├── pi-mono/                              # github.com/badlogic/pi-mono
 │   ├── openclaw/                             # github.com/openclaw/openclaw
-│   └── gemini-cli/                           # github.com/google-gemini/gemini-cli
+│   ├── gemini-cli/                           # github.com/google-gemini/gemini-cli
+│   └── claude-code-system-prompts/           # github.com/Piebald-AI/claude-code-system-prompts
 │
 ├── blog.chinese.md                          # Chinese blog post
 └── demos/                                   # Experimental implementations
@@ -128,12 +129,12 @@ llm-agent-research/
 | `openclaw.research.md` | [OpenClaw](https://github.com/openclaw/openclaw) | Multi-stage pipeline: sanitize → validate → truncate → assemble. Pluggable ContextEngine (7 lifecycle hooks). Per-provider turn validation. Built-in subagent via gateway RPC (bidirectional) |
 | `gemini-cli.research.md` | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Two-pass verified compression (generate + probe). Tool output pre-summarization with reverse token budget. 50% threshold (aggressive). In-process subagents with fresh chat instance |
 
-### Reverse Engineering (Planned)
+### Reverse Engineering
 
-| File | Project | Status |
-|------|---------|--------|
-| `claude-code-context.research.md` | Claude Code | TBD |
-| `codex-context.research.md` | Codex | TBD |
+| File | Project | Key Finding |
+|------|---------|-------------|
+| `claude-code-context.research.md` | Claude Code | Server-side API compaction (simplest client). 9-section summary (most detailed). Model-level context awareness (`<budget:token_budget>`). Worker fork inherits full parent context. 65+ modular system prompt files + 20+ dynamic reminders |
+| `codex-context.research.md` | [Codex](https://github.com/openai/codex) | Dual compaction (server encrypted + client LLM). Per-item tool output truncation at record time. Mid-stream compaction. Single flat loop (no sub-agents). Rust implementation. Minimal 4-section compaction prompt |
 
 See [plan/1-context-research.md](./plan/1-context-research.md) for detailed research plan.
 
