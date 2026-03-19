@@ -25,3 +25,6 @@
 [submodule "codex-cli"]
 	path = codex-cli
 	url = https://github.com/openai/codex.git
+[submodule "opencode"]
+	path = opencode
+	url = git@github.com:anomalyco/opencode.git

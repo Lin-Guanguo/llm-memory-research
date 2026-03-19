@@ -6,10 +6,27 @@ A systematic research project studying LLM agent internals: memory implementatio
 
 ---
 
+## Published Articles
+
+| Article | Platform | File |
+|---------|----------|------|
+| [LLM记忆：设计很复杂，落地出奇简单](http://xhslink.com/o/7JBMfdnw71i) | 小红书 | `memory.blog.1.chinese.md` |
+
+---
+
 ## Research Directions
 
 1. **Memory** — How agents persist and retrieve knowledge across conversations
 2. **Context** — How agents assemble and manage context within a conversation (token generation, prompt stitching, token budgeting)
+
+## Summary Documents
+
+| File | Scope | Content |
+|------|-------|---------|
+| **[findings.md](./findings.md)** | **Cross-domain** | 8 findings from studying memory × context together: shared patterns, unsolved problems, research gaps |
+| **[memory.summary.md](./memory.summary.md)** | Memory | Consolidated findings from reverse-engineering ChatGPT, Claude, and open-source memory systems |
+| **[memory.ecosystem.md](./memory.ecosystem.md)** | Memory | Market overview with GitHub stars, funding, and research priorities |
+| **[context.summary.md](./context.summary.md)** | Context | Cross-project comparison (6 agents), design patterns, open questions |
 
 ---
 
@@ -22,8 +39,9 @@ llm-agent-research/
 │
 ├── Memory Research (*.research.md)
 │   ├── production-adoption.research.md      # Production deployment cases
-│   ├── ecosystem.md                         # Market analysis & priorities
-│   ├── summary.md                           # Reverse-engineering findings
+│   ├── memory.ecosystem.md                  # Market analysis & priorities
+│   ├── memory.summary.md                    # Memory research summary
+│   ├── context.summary.md                   # Context research summary
 │   ├── mem0.research.md                     # Mem0: LLM-driven CRUD memory
 │   ├── letta.research.md                    # Letta: Three-tier self-editing memory
 │   ├── graphiti.research.md                 # Graphiti: Bi-temporal knowledge graph
@@ -38,7 +56,8 @@ llm-agent-research/
 │   ├── openclaw.research.md                  # OpenClaw: Pluggable ContextEngine
 │   ├── gemini-cli.research.md                # Gemini CLI: Context management (open source)
 │   ├── claude-code-context.research.md        # Claude Code: Server-side compaction + context awareness
-│   └── codex-context.research.md             # Codex: Dual compaction + per-item truncation
+│   ├── codex-context.research.md             # Codex: Dual compaction + per-item truncation
+│   └── dayfold-agent-context.research.md    # Dayfold: Dual-channel workflow agent
 │
 ├── reverse-engineer/                        # Product reverse-engineering
 │   ├── chatgpt-memory-reverse-engineering.md
@@ -59,9 +78,10 @@ llm-agent-research/
 │   ├── pi-mono/                              # github.com/badlogic/pi-mono
 │   ├── openclaw/                             # github.com/openclaw/openclaw
 │   ├── gemini-cli/                           # github.com/google-gemini/gemini-cli
-│   └── claude-code-system-prompts/           # github.com/Piebald-AI/claude-code-system-prompts
+│   ├── claude-code-system-prompts/           # github.com/Piebald-AI/claude-code-system-prompts
+│   └── opencode/                             # github.com/anomalyco/opencode
 │
-├── blog.chinese.md                          # Chinese blog post
+├── memory.blog.1.chinese.md                 # Memory research blog post (Chinese)
 └── demos/                                   # Experimental implementations
     └── knowledge-base/                      # ChromaDB vector search demo
 ```
@@ -75,8 +95,8 @@ llm-agent-research/
 | File | Content |
 |------|---------|
 | `production-adoption.research.md` | Real-world adoption: Mem0 (AWS SDK), Letta (11x, Kognitos), Graphiti (Zep AI) |
-| `ecosystem.md` | GitHub stars, funding data, market segmentation, research priorities |
-| `summary.md` | Consolidated findings from reverse-engineering and open-source analysis |
+| `memory.ecosystem.md` | GitHub stars, funding data, market segmentation, research priorities |
+| `memory.summary.md` | Consolidated findings from reverse-engineering and open-source analysis |
 
 ### Memory Frameworks
 
@@ -128,13 +148,20 @@ llm-agent-research/
 | `pi.research.md` | [Pi](https://github.com/badlogic/pi-mono) | Minimal: infinite accumulate → single LLM summary compaction. No pre-send processing, no token budgeting. ~300 word system prompt. Subagent via extension (process isolation) |
 | `openclaw.research.md` | [OpenClaw](https://github.com/openclaw/openclaw) | Multi-stage pipeline: sanitize → validate → truncate → assemble. Pluggable ContextEngine (7 lifecycle hooks). Per-provider turn validation. Built-in subagent via gateway RPC (bidirectional) |
 | `gemini-cli.research.md` | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Two-pass verified compression (generate + probe). Tool output pre-summarization with reverse token budget. 50% threshold (aggressive). In-process subagents with fresh chat instance |
+| `codex-context.research.md` | [Codex](https://github.com/openai/codex) | Dual compaction (server encrypted + client LLM). Per-item tool output truncation at record time. Mid-stream compaction. Single flat loop (no sub-agents). Rust implementation. Minimal 4-section compaction prompt |
+| `opencode.research.md` | [OpenCode](https://github.com/anomalyco/opencode) | Two-phase compaction (prune tool outputs + LLM summary). Provider-specific system prompts. Resumable sub-agent sessions. Filesystem-aware fork/revert. Plugin hooks for compaction |
 
 ### Reverse Engineering
 
 | File | Project | Key Finding |
 |------|---------|-------------|
 | `claude-code-context.research.md` | Claude Code | Server-side API compaction (simplest client). 9-section summary (most detailed). Model-level context awareness (`<budget:token_budget>`). Worker fork inherits full parent context. 65+ modular system prompt files + 20+ dynamic reminders |
-| `codex-context.research.md` | [Codex](https://github.com/openai/codex) | Dual compaction (server encrypted + client LLM). Per-item tool output truncation at record time. Mid-stream compaction. Single flat loop (no sub-agents). Rust implementation. Minimal 4-section compaction prompt |
+
+### Self-Developed Agent
+
+| File | Project | Key Finding |
+|------|---------|-------------|
+| `dayfold-agent-context.research.md` | Dayfold Agent (LangGraph workflow) | Dual-channel design (Ports for structured data + ContextMessages for semantic memory). Proactive per-node summary_exchange compression (vs reactive compaction in mainstream agents). Three-tier per-node context_filter. No compaction fallback |
 
 See [plan/1-context-research.md](./plan/1-context-research.md) for detailed research plan.
 
