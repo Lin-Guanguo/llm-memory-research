@@ -18,6 +18,7 @@ A systematic research project studying LLM agent internals: memory implementatio
 
 1. **Memory** — How agents persist and retrieve knowledge across conversations
 2. **Context** — How agents assemble and manage context within a conversation (token generation, prompt stitching, token budgeting)
+3. **Learning** (TODO) — Can models learn after deployment? Continual learning, catastrophic forgetting, personalized models via fine-tuning/LoRA. Currently no production coding agent does this — all use external memory instead of weight updates
 
 ## Summary Documents
 
@@ -56,8 +57,7 @@ llm-agent-research/
 │   ├── openclaw.research.md                  # OpenClaw: Pluggable ContextEngine
 │   ├── gemini-cli.research.md                # Gemini CLI: Context management (open source)
 │   ├── claude-code-context.research.md        # Claude Code: Server-side compaction + context awareness
-│   ├── codex-context.research.md             # Codex: Dual compaction + per-item truncation
-│   └── dayfold-agent-context.research.md    # Dayfold: Dual-channel workflow agent
+│   └── codex-context.research.md             # Codex: Dual compaction + per-item truncation
 │
 ├── reverse-engineer/                        # Product reverse-engineering
 │   ├── chatgpt-memory-reverse-engineering.md
@@ -156,12 +156,7 @@ llm-agent-research/
 | File | Project | Key Finding |
 |------|---------|-------------|
 | `claude-code-context.research.md` | Claude Code | Server-side API compaction (simplest client). 9-section summary (most detailed). Model-level context awareness (`<budget:token_budget>`). Worker fork inherits full parent context. 65+ modular system prompt files + 20+ dynamic reminders |
-
-### Self-Developed Agent
-
-| File | Project | Key Finding |
-|------|---------|-------------|
-| `dayfold-agent-context.research.md` | Dayfold Agent (LangGraph workflow) | Dual-channel design (Ports for structured data + ContextMessages for semantic memory). Proactive per-node summary_exchange compression (vs reactive compaction in mainstream agents). Three-tier per-node context_filter. No compaction fallback |
+| `anthropic-context-engineering.research.md` | Anthropic official guidance | Anthropic's recommendations vs industry practice. Four types of context rot. Three long-horizon strategies (tool result clearing → compaction → sub-agents). Compliance analysis across all studied agents |
 
 See [plan/1-context-research.md](./plan/1-context-research.md) for detailed research plan.
 

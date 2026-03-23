@@ -1,10 +1,58 @@
 # Cross-Domain Findings: Memory × Context
 
-Last Updated: 2026-03-19
+Last Updated: 2026-03-23
 
-Findings from studying memory implementations (8 projects) and context management (6 agents) in LLM systems.
+Findings from studying memory implementations (8 projects) and context management (7 agents) in LLM systems.
 
 ---
+
+## Framework: Three Pillars of LLM Information Management
+
+Memory and context are not separate problems — they are the same problem at different time scales. Context is "memory within a conversation"; memory is "context across conversations." Compaction generates summaries that are functionally identical to memory extraction.
+
+All mechanisms studied across both domains reduce to **three fundamental pillars**:
+
+### Pillar 1: Compression
+
+Reduce information to fit constraints. Necessary because context windows are finite and attention degrades with length (context rot).
+
+| Approach | Mechanism | Examples |
+|----------|-----------|---------|
+| **Programmatic removal** | Rule-based truncation, no LLM involved | Codex per-item truncation (10KB limit), OpenCode `prune()` (erase old tool outputs) |
+| **Tool result clearing** | Remove raw results of past tool calls | Claude Code `context_editing` API, Gemini CLI reverse token budget |
+| **LLM summarization** | Generate compressed summary when approaching threshold | All agents' compaction (Pi 6-section, Claude Code 9-section, Gemini CLI with verification probe) |
+| **Hierarchical compression** | Multi-level: recent → detailed, old → summary, very old → facts | Memory systems (Mem0 extracts facts, Letta's three-tier Core/Recall/Archival) |
+
+### Pillar 2: Retrieval
+
+Select relevant information from a larger pool and inject into context. Necessary because not all stored information is relevant to the current task.
+
+| Approach | When loaded | Examples |
+|----------|-------------|---------|
+| **Preload everything** | Session start, fixed cost | ChatGPT Memory (33 facts always injected), Pi (full history every call) |
+| **Preload important + JIT rest** | Hybrid: important at start, details on demand | Claude Code (CLAUDE.md preloaded + glob/grep on demand), Gemini CLI (GEMINI.md + tools) |
+| **On-demand only** | When model decides to search | Claude Memory (`conversation_search` tool), vector search (Qdrant/Chroma) |
+| **Per-node filtering** | Per LLM call, tag-based | Self-developed workflow agent (context_filter: Full/Cap-restricted/None per capability) |
+| **Hierarchical retrieval** | Top-level first, drill down | Claude Code memory (MEMORY.md first 200 lines preloaded, deeper content via memory_search/memory_get) |
+
+Current trend: **Hybrid** (preload + JIT) is the dominant approach. Preload everything doesn't scale; pure JIT is too aggressive and risks missing information.
+
+### Pillar 3: Continuous Learning (Unexplored)
+
+Write knowledge into model weights so it persists without external storage. This would eliminate the need for external memory systems entirely.
+
+| Status | Details |
+|--------|---------|
+| **Academic research** | Continual learning, catastrophic forgetting mitigation (LoRA, self-distillation, rehearsal) |
+| **Production reality** | No coding agent does this. All use external memory (Pillar 1 + 2) instead of weight updates |
+| **Blockers** | Catastrophic forgetting, compute cost, no standard methodology for per-user adaptation |
+| **Future direction** | May converge with memory — e.g., accumulate external memories, then periodically batch-write into weights via fine-tuning |
+
+The most effective systems combine Pillar 1 and 2: **compress what's old, retrieve what's relevant**. Pillar 3 remains a research frontier.
+
+---
+
+## Detailed Findings
 
 ## Finding 1: Memory and Context Are the Same Problem at Different Time Scales
 
@@ -19,7 +67,7 @@ Memory (cross-session) and context (within-session) face identical challenges:
 
 Compaction IS memory creation. When Claude Code generates a 9-section summary during compaction, it's creating a "memory" of the conversation. When Mem0 extracts facts from a conversation, it's "compacting" the conversation into durable storage.
 
-**Implication**: Techniques from one domain likely transfer to the other. Graph-based memory (Graphiti) has no equivalent in context management yet. Proactive compression from context (Dayfold's per-node summary) has no equivalent in memory yet.
+**Implication**: Techniques from one domain likely transfer to the other. Graph-based memory (Graphiti) has no equivalent in context management yet. Proactive compression from context (self-developed workflow agent's per-node summary) has no equivalent in memory yet.
 
 ## Finding 2: Two Philosophies Appear in Both Domains
 
@@ -29,7 +77,7 @@ Compaction IS memory creation. When Claude Code generates a 9-section summary du
 
 **"Curate aggressively, minimize noise"**
 - Memory: Claude retrieves on-demand via `conversation_search`
-- Context: OpenClaw's multi-stage pipeline, Dayfold's per-node context_filter
+- Context: OpenClaw's multi-stage pipeline, self-developed workflow agent's per-node context_filter
 
 Neither philosophy is strictly better. The "trust the model" approach is simpler to implement and works well with large context windows. The "curate" approach scales better but adds engineering complexity and risks filtering out relevant information.
 
@@ -56,7 +104,7 @@ No system has a reliable way to know what was lost during compression. Gemini CL
 
 Memory research found three forms: structured facts (Mem0), narrative text (Letta), relationship graphs (Graphiti).
 
-Context research found the same split: all mainstream agents use a single narrative channel (conversation messages), while Dayfold separates structured data (Ports) from narrative context (ContextMessages).
+Context research found the same split: all mainstream agents use a single narrative channel (conversation messages), while self-developed workflow agent separates structured data (Ports) from narrative context (ContextMessages).
 
 In mainstream agents, structured data (JSON tool results, code snippets, file contents) is forced into the narrative conversation format. This wastes tokens and makes extraction harder for the model. The dual-channel approach addresses this but adds architectural complexity.
 
@@ -104,9 +152,30 @@ This is a potential research direction: could graph-based context representation
 All studied agents use simple prompt placement strategies (system prompt at start, everything else in messages). None run A/B tests on:
 - Whether rules in system prompt vs user message affect output quality
 - Whether message ordering within context affects task completion
-- Whether filtering context (OpenClaw/Dayfold) improves or degrades performance vs sending everything (Pi)
+- Whether filtering context (OpenClaw/self-developed workflow agent) improves or degrades performance vs sending everything (Pi)
 
 The AI Muse 18-model benchmark is the closest empirical work, and it only tested constraint compliance, not agent task performance. This is a gap in the field.
+
+## Finding 9: Both Domains Reduce to Two Fundamental Operations — Compression and Retrieval
+
+Every mechanism studied in both memory and context can be classified as either **compression** (reduce information to fit constraints) or **retrieval** (select relevant information from a larger pool).
+
+| | Compression | Retrieval |
+|--|-------------|-----------|
+| **Memory** | Mem0 fact extraction, Letta self-editing, ChatGPT pre-computed summaries | Claude `conversation_search`, vector search (Qdrant/Chroma), Graphiti graph traversal |
+| **Context** | Compaction (all agents), tool output truncation/summarization, summary_exchange | OpenClaw `assemble(tokenBudget)`, self-developed workflow agent context_filter, sub-agent targeted exploration |
+
+Each system is a different mix of the two:
+
+- **Compression-heavy**: Pi (send everything, compact when full), ChatGPT Memory (pre-compress 33 facts, always inject)
+- **Retrieval-heavy**: Claude Memory (on-demand search, no pre-injection), Graphiti (graph traversal for relevant entities)
+- **Balanced**: OpenClaw (filter + assemble + compact), Claude Code (server-side compact + sub-agent exploration), self-developed workflow agent (per-node filter + proactive summary)
+
+Core tradeoff:
+- **Compression**: Information is irreversibly lost, but context stays small and cost is low
+- **Retrieval**: Information is preserved, but requires indexing/query infrastructure and may miss relevant items
+
+This framing suggests that advancing either domain means improving one of two things: better compression (lose less during summarization) or better retrieval (find more relevant information with less noise). The most effective systems will combine both — compress what's old, retrieve what's relevant.
 
 ---
 
@@ -122,3 +191,4 @@ The AI Muse 18-model benchmark is the closest empirical work, and it only tested
 | Sub-agents = compression strategy | Underrecognized | Design sub-agent boundaries as compression boundaries |
 | Knowledge graphs unexplored in context | Gap | Research opportunity |
 | Prompt placement unvalidated | Gap | Empirical testing needed |
+| Compression + Retrieval as two fundamental ops | Framework | Use to classify and evaluate any memory/context mechanism |

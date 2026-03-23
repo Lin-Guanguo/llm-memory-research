@@ -1,6 +1,6 @@
 # Context Management in LLM Agents: Research Summary
 
-Last Updated: 2026-03-19
+Last Updated: 2026-03-23
 
 ---
 
@@ -14,7 +14,12 @@ Last Updated: 2026-03-19
 | Claude Code | Closed source (prompts extracted) | TypeScript (Bun binary) | `claude-code-context.research.md` |
 | [Codex](https://github.com/openai/codex) | Open source | Rust | `codex-context.research.md` |
 | [OpenCode](https://github.com/anomalyco/opencode) | Open source | TypeScript/Bun | `opencode.research.md` |
-| Dayfold Agent | Self-developed | Python (LangGraph) | `dayfold-agent-context.research.md` |
+
+### Additional References
+
+| Source | Type | File |
+|--------|------|------|
+| Anthropic official guidance | Best practices + compliance analysis | `anthropic-context-engineering.research.md` |
 
 ---
 
@@ -40,7 +45,7 @@ Specifically:
 Single-loop agents                          Multi-node workflow
 (one context, one LLM)                      (multiple contexts, multiple LLMs)
 
-Pi ── Codex ── Gemini CLI ── Claude Code ── OpenClaw ── Dayfold
+Pi ── Codex ── Gemini CLI ── Claude Code ── OpenClaw ── Self-developed agent
 │      │          │              │              │           │
 │  per-item    2-pass         server-side    multi-stage   dual-channel
 │  truncation  verify         compaction     pipeline      (Ports + Context)
@@ -63,7 +68,8 @@ simple ────────────────────────�
 | Gemini CLI | Pre-summarized large tool outputs | LLM summarization before entry + reverse token budget |
 | Claude Code | Full tool results, all messages | None (API handles compaction) |
 | OpenClaw | Full tool results | Multi-stage: sanitize → validate → truncate → assemble |
-| Dayfold | Summary exchange only (full exchange disabled) | Per-node context_filter |
+| OpenCode | Full tool results, pruned after 40K token budget | Two-phase: prune old tool outputs + LLM summarization |
+| Self-developed agent | Summary exchange only (full exchange disabled) | Per-node context_filter |
 
 ### Compaction Strategy
 
@@ -75,7 +81,8 @@ simple ────────────────────────�
 | Gemini CLI | Client | 50% of token limit | LLM summary + probe verification | 2nd LLM call verifies completeness |
 | Claude Code | Server (API) | ~80% of context window | 9-section structured summary | None (but 3 analysis variants) |
 | OpenClaw | Client (Pi inherited) | Same as Pi | Same as Pi, or custom ContextEngine | Depends on engine |
-| Dayfold | N/A | Per-node (proactive) | summary_exchange templates | None; no reactive compaction fallback |
+| OpenCode | Client | context >= usable input limit | Two-phase: prune tool outputs + LLM 5-section summary | None; plugin hook for custom compaction |
+| Self-developed agent | N/A | Per-node (proactive) | summary_exchange templates | None; no reactive compaction fallback |
 
 ### Sub-Agent Context Model
 
@@ -86,7 +93,8 @@ simple ────────────────────────�
 | Gemini CLI | In-process (new GeminiChat) | Fresh chat instance | Final text only |
 | Claude Code | 6+ types (Explore, Plan, Fork...) | Fresh context (except Fork: inherits parent) | Final text only |
 | OpenClaw | Gateway RPC (sessions_spawn) | Session-level isolation | Text + bidirectional steering |
-| Dayfold | Capability nodes | Per-node context_filter (3 tiers) | summary_exchange + port_values |
+| OpenCode | Session-based (Task tool) | Separate SQLite session, resumable | Final text in `<task_result>` tags |
+| Self-developed agent | Capability nodes | Per-node context_filter (3 tiers) | summary_exchange + port_values |
 
 ### System Prompt
 
@@ -97,7 +105,8 @@ simple ────────────────────────�
 | Gemini CLI | Section-based, toggleable, model-aware | GEMINI.md loading |
 | Claude Code | 65+ modular files, ~8K tokens | 20+ system-reminder templates, per-event |
 | OpenClaw | 15+ sections, 3 modes (full/minimal/none) | Minimal |
-| Dayfold | YAML profile templates per capability | Per-node prompt rendering with variables |
+| OpenCode | Provider-specific prompts (Anthropic/GPT/Gemini/default) | AGENTS.md + CLAUDE.md + CONTEXT.md hierarchy |
+| Self-developed agent | YAML profile templates per capability | Per-node prompt rendering with variables |
 
 ---
 
@@ -110,7 +119,7 @@ Most agents compress **reactively** — wait until context is nearly full, then 
 Exceptions:
 - **Codex**: Per-item truncation at entry time (proactive for tool outputs)
 - **Gemini CLI**: Tool output pre-summarization (proactive for large results)
-- **Dayfold**: summary_exchange at node completion (proactive for all node outputs)
+- **Self-developed agent**: summary_exchange at node completion (proactive for all node outputs)
 
 ### Pattern 2: Client-Side → Server-Side Migration
 
@@ -123,7 +132,7 @@ Context compaction is moving server-side:
 
 All mainstream agents use a **single channel** — everything (user messages, tool results, system reminders, summaries) goes into one conversation array.
 
-Dayfold's dual-channel design (Ports for structured data, ContextMessages for semantic memory) is the only exception studied. This prevents structured data from inflating the conversation context.
+Self-developed agent's dual-channel design (Ports for structured data, ContextMessages for semantic memory) is the only exception studied. This prevents structured data from inflating the conversation context.
 
 ### Pattern 4: Context Awareness as a Model Feature
 
@@ -131,7 +140,29 @@ Claude Code's `<budget:token_budget>` and `<system_warning>` tags make the model
 
 ### Pattern 5: Sub-Agents as Context Management
 
-Using sub-agents is fundamentally a **context management strategy**: give a focused task its own clean context window, get back a compressed summary. This pattern appears in Claude Code (Explore/Plan agents), OpenClaw (sessions_spawn), Gemini CLI (LocalAgentExecutor), and Dayfold (capability nodes with context_filter).
+Using sub-agents is fundamentally a **context management strategy**: give a focused task its own clean context window, get back a compressed summary. This pattern appears in Claude Code (Explore/Plan agents), OpenClaw (sessions_spawn), Gemini CLI (LocalAgentExecutor), and Self-developed agent (capability nodes with context_filter).
+
+### Pattern 6: Context Rot Awareness (from Anthropic)
+
+Anthropic identifies four types of context degradation (`anthropic-context-engineering.research.md`):
+
+| Type | Description | Agents that address it |
+|------|-------------|----------------------|
+| **Poisoning** (incorrect info) | Stale tool results from modified files | Only Claude Code (file modification detection) |
+| **Distraction** (irrelevant info) | Old tool outputs consuming attention | Codex, Gemini CLI, OpenCode (truncation/pruning) |
+| **Confusion** (similar info) | Two similar files causing misassociation | No agent addresses this systematically |
+| **Clash** (contradictory info) | Old and new versions of same data | OpenCode fork/revert (lets user branch away) |
+
+Most agents only address distraction. Poisoning, confusion, and clash are largely unmitigated.
+
+### Pattern 7: Anthropic Recommendations vs Practice
+
+Key gaps between what Anthropic recommends and what agents actually do (full analysis in `anthropic-context-engineering.research.md`):
+
+- **Sub-agent returns should be 1-2K tokens** → No agent enforces this (all unbounded)
+- **Compaction should maximize recall** → Only Gemini CLI verifies with a second LLM call
+- **Context quality should be evaluated** → No agent measures compression information loss
+- **Tool result clearing is the safest first step** → Only Codex, OpenCode, and Claude Code do this; Pi and OpenClaw skip it entirely
 
 ---
 
