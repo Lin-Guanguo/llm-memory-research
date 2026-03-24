@@ -26,6 +26,7 @@ A systematic research project studying LLM agent internals: memory implementatio
 |------|-------|---------|
 | **[findings.md](./findings.md)** | **Cross-domain** | 8 findings from studying memory × context together: shared patterns, unsolved problems, research gaps |
 | **[memory.summary.md](./memory.summary.md)** | Memory | Consolidated findings from reverse-engineering ChatGPT, Claude, and open-source memory systems |
+| **[memory.26Q1.summary.md](./memory.26Q1.summary.md)** | Memory (2026 Q1) | New projects: Supermemory, Mastra, Hindsight, MemOS. Anti-RAG trend, compression as strategy |
 | **[memory.ecosystem.md](./memory.ecosystem.md)** | Memory | Market overview with GitHub stars, funding, and research priorities |
 | **[context.summary.md](./context.summary.md)** | Context | Cross-project comparison (6 agents), design patterns, open questions |
 
