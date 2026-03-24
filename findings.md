@@ -177,6 +177,49 @@ Core tradeoff:
 
 This framing suggests that advancing either domain means improving one of two things: better compression (lose less during summarization) or better retrieval (find more relevant information with less noise). The most effective systems will combine both — compress what's old, retrieve what's relevant.
 
+## Finding 10: Text Search Dominates Over RAG in Practice
+
+Despite the hype around RAG (Retrieval-Augmented Generation) and vector databases, **no coding agent uses RAG in its core agentic loop**. All 7 studied agents rely on text search:
+
+| Agent | Search tool | Method |
+|-------|-----------|--------|
+| Claude Code | `glob`, `grep`, `Read` | File pattern matching + regex |
+| Codex | `rg` (ripgrep) | Regex text search |
+| OpenCode | ripgrep | Regex text search |
+| Gemini CLI | built-in grep/glob | File pattern + regex |
+| Pi | `grep`, `find` | Standard unix tools |
+| OpenClaw | inherited from Pi | Same |
+| Self-developed agent | N/A (data via ports) | Structured port bindings |
+
+Anthropic calls this "Agentic Search" — but the underlying mechanism is `glob` + `grep`, not embedding similarity.
+
+### Why text search wins in coding agents
+
+| Factor | Text search (grep/glob) | RAG (vector search) |
+|--------|------------------------|-------------------|
+| **Index cost** | Zero — scan on demand | High — must compute embeddings upfront |
+| **Latency** | ripgrep: milliseconds on large codebases | Vector query: faster, but index must exist |
+| **Precision** | Exact — find exactly `handleAuth` | Fuzzy — may return semantically similar but wrong results |
+| **Explainability** | You know why it matched | Opaque similarity score |
+| **Staleness** | Always current (reads live files) | Index can be stale after edits |
+
+### Where RAG does appear
+
+RAG is used in the **memory** layer (cross-session retrieval), not the context layer (within-session search):
+
+| Scenario | Best method | Why |
+|----------|-----------|-----|
+| Find a function in codebase | Text search | Exact identifier match, zero index cost |
+| Find relevant past conversation | Vector search (RAG) | Natural language, semantic matching needed |
+| Find user preferences in memory | Text search may suffice | Short structured facts, keyword matching works |
+| Find related documentation | Vector search (RAG) | Long natural language, semantic relevance |
+
+### The production reality
+
+Memory research found the same pattern: ChatGPT Memory uses pre-computed facts (no RAG at runtime), Claude Memory uses tool-based search. The vector databases studied (Qdrant, Chroma) are powerful infrastructure, but the agents that ship to millions of users chose simpler approaches.
+
+This suggests RAG's value is in **knowledge-base retrieval** (documentation, past conversations) rather than **real-time agent operation** (finding code, executing tasks).
+
 ---
 
 ## Summary Table
@@ -192,3 +235,4 @@ This framing suggests that advancing either domain means improving one of two th
 | Knowledge graphs unexplored in context | Gap | Research opportunity |
 | Prompt placement unvalidated | Gap | Empirical testing needed |
 | Compression + Retrieval as two fundamental ops | Framework | Use to classify and evaluate any memory/context mechanism |
+| Text search dominates over RAG in practice | Observed | RAG for knowledge bases; text search for real-time agent operation |

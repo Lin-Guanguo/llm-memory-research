@@ -16,9 +16,9 @@ A systematic research project studying LLM agent internals: memory implementatio
 
 ## Research Directions
 
-1. **Memory** — How agents persist and retrieve knowledge across conversations
+1. **Memory** — How agents persist and retrieve knowledge across conversations. See [plan/3-memory-update.md](./plan/3-memory-update.md) for 2026 Q1 update plan (Supermemory, Observational Memory, Hindsight, etc.)
 2. **Context** — How agents assemble and manage context within a conversation (token generation, prompt stitching, token budgeting)
-3. **Learning** (TODO) — Can models learn after deployment? Continual learning, catastrophic forgetting, personalized models via fine-tuning/LoRA. Currently no production coding agent does this — all use external memory instead of weight updates
+3. **Learning** (TODO) — Can models learn after deployment? Continual learning, catastrophic forgetting, personalized models via fine-tuning/LoRA. See [plan/2-learning-research.md](./plan/2-learning-research.md) for detailed plan
 
 ## Summary Documents
 
@@ -120,6 +120,10 @@ llm-agent-research/
 | `cursor.research.md` | [Cursor](https://cursor.com) | Custom embeddings trained from agent session traces |
 | `augmentcode.research.md` | [Augment](https://augmentcode.com) | Real-time personal index + edit events (+2.6% improvement) |
 | `continue.research.md` | [Continue](https://github.com/continuedev/continue) | BYOM architecture + content-addressed caching |
+| `memos.research.md` | [MemOS](https://github.com/MemTensor/MemOS) | Three-layer memory OS (Plaintext/Activation/Parametric). MemCube container. Neo4j tree memory. LoRA weight memory is stub |
+| `hindsight.research.md` | [Hindsight](https://github.com/vectorize-io/hindsight) | Four memory networks (World/Experience/Observation/Opinion). MPFP graph traversal. Tempr retain+recall, Cara reflect. 91.4% LongMemEval |
+| `mastra.research.md` | [Observational Memory (Mastra)](https://mastra.ai/research/observational-memory) | Pure compression, no retrieval. Observer+Reflector agents. 94.87% LongMemEval. 10x cost reduction vs RAG |
+| `supermemory.research.md` | [Supermemory](https://github.com/supermemoryai/supermemory) | ASMR: LLM-as-retriever, 3+3 agent pipeline, ensemble voting. Production SDK vs experimental ASMR. 98.6% oracle / 81.6% production |
 
 ### Reverse Engineering
 

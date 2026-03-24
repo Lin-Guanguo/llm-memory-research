@@ -28,3 +28,15 @@
 [submodule "opencode"]
 	path = opencode
 	url = git@github.com:anomalyco/opencode.git
+[submodule "memos"]
+	path = memos
+	url = git@github.com:MemTensor/MemOS.git
+[submodule "hindsight"]
+	path = hindsight
+	url = git@github.com:vectorize-io/hindsight.git
+[submodule "supermemory"]
+	path = supermemory
+	url = git@github.com:supermemoryai/supermemory.git
+[submodule "mastra"]
+	path = mastra
+	url = git@github.com:mastra-ai/mastra.git
