@@ -25,8 +25,10 @@ A systematic research project studying LLM agent internals: memory implementatio
 | File | Scope | Content |
 |------|-------|---------|
 | **[summary.md](./summary.md)** | **All directions** | Full research synthesis: two analytical angles (methods × directions), memory, context, cross-domain findings, open questions |
+| **[summary.chinese.md](./summary.chinese.md)** | **All directions** | Chinese translation of summary.md |
 | **[findings.md](./findings.md)** | **Cross-domain** | 10 detailed findings from studying memory × context together |
 | **[memory.summary.md](./memory.summary.md)** | Memory | Consolidated findings from reverse-engineering ChatGPT, Claude, and open-source memory systems |
+| **[memory.26Q1.summary.md](./memory.26Q1.summary.md)** | Memory (2026 Q1) | New projects: Supermemory, Mastra, Hindsight, MemOS. Anti-RAG trend, compression as strategy |
 | **[memory.ecosystem.md](./memory.ecosystem.md)** | Memory | Market overview with GitHub stars, funding, and research priorities |
 | **[context.summary.md](./context.summary.md)** | Context | Cross-project comparison (6 agents), design patterns, open questions |
 
@@ -36,55 +38,77 @@ A systematic research project studying LLM agent internals: memory implementatio
 
 ```
 llm-agent-research/
-├── plan/                                    # Research plans
-│   └── 1-context-research.md                # Context research plan & steps
+├── plan/                                     # Research plans
+│   ├── 1-context-research.md                 # Context research plan & steps (completed)
+│   ├── 2-learning-research.md                # Continuous learning research plan (TODO)
+│   └── 3-memory-update.md                    # 2026 Q1 memory update plan (research done)
+│
+├── Summary & Cross-Domain
+│   ├── summary.md                            # Full research synthesis (EN)
+│   ├── summary.chinese.md                    # Full research synthesis (CN)
+│   ├── findings.md                           # Cross-domain findings (Memory × Context)
+│   ├── memory.summary.md                     # Memory research summary (Phase 1)
+│   ├── memory.26Q1.summary.md                # Memory research summary (2026 Q1)
+│   ├── memory.ecosystem.md                   # Market analysis & priorities
+│   └── context.summary.md                    # Context research summary
 │
 ├── Memory Research (*.research.md)
-│   ├── production-adoption.research.md      # Production deployment cases
-│   ├── memory.ecosystem.md                  # Market analysis & priorities
-│   ├── memory.summary.md                    # Memory research summary
-│   ├── context.summary.md                   # Context research summary
-│   ├── mem0.research.md                     # Mem0: LLM-driven CRUD memory
-│   ├── letta.research.md                    # Letta: Three-tier self-editing memory
-│   ├── graphiti.research.md                 # Graphiti: Bi-temporal knowledge graph
-│   ├── qdrant.research.md                   # Qdrant: Filtrable HNSW vector DB
-│   ├── chroma.research.md                   # Chroma: Developer-friendly vector DB
-│   ├── continue.research.md                 # Continue: Open-source coding assistant
-│   ├── cursor.research.md                   # Cursor: Custom embedding training
-│   └── augmentcode.research.md              # Augment: Real-time personal index
+│   ├── mem0.research.md                      # Mem0: LLM-driven CRUD memory
+│   ├── letta.research.md                     # Letta: Three-tier self-editing memory
+│   ├── graphiti.research.md                  # Graphiti: Bi-temporal knowledge graph
+│   ├── hindsight.research.md                 # Hindsight: Four memory networks + reflect
+│   ├── mastra.research.md                    # Mastra OM: Pure compression, no retrieval
+│   ├── memos.research.md                     # MemOS: Memory as OS resource
+│   ├── supermemory.research.md               # Supermemory: ASMR, LLM-as-retriever
+│   ├── qdrant.research.md                    # Qdrant: Filtrable HNSW vector DB
+│   ├── chroma.research.md                    # Chroma: Developer-friendly vector DB
+│   ├── cursor.research.md                    # Cursor: Custom embedding training
+│   ├── augmentcode.research.md               # Augment: Real-time personal index
+│   ├── continue.research.md                  # Continue: Open-source coding assistant
+│   └── production-adoption.research.md       # Production deployment cases
 │
 ├── Context Research
 │   ├── pi.research.md                        # Pi: Minimal agent loop & compaction
 │   ├── openclaw.research.md                  # OpenClaw: Pluggable ContextEngine
-│   ├── gemini-cli.research.md                # Gemini CLI: Context management (open source)
-│   ├── claude-code-context.research.md        # Claude Code: Server-side compaction + context awareness
-│   └── codex-context.research.md             # Codex: Dual compaction + per-item truncation
+│   ├── gemini-cli.research.md                # Gemini CLI: Two-pass verified compression
+│   ├── claude-code-context.research.md       # Claude Code: Server-side compaction + context awareness
+│   ├── codex-context.research.md             # Codex: Dual compaction + per-item truncation
+│   ├── opencode.research.md                  # OpenCode: Two-phase compaction + fork/revert
+│   └── anthropic-context-engineering.research.md  # Anthropic official guidance vs practice
 │
-├── reverse-engineer/                        # Product reverse-engineering
+├── reverse-engineer/                         # Product reverse-engineering
 │   ├── chatgpt-memory-reverse-engineering.md
 │   └── claude-memory-reverse-engineering.md
 │
-├── agent-cli/                               # Agent CLI session file analysis
-│   ├── agent-files-analysis.md              # Cross-tool comparison
-│   ├── claude-session-files.md              # Claude Code session structure
-│   ├── codex-session-files.md               # Codex session structure
-│   ├── gemini-session-files.md              # Gemini CLI session structure
-│   └── *-session-file-schema.md             # Detailed JSON schemas
+├── agent-cli/                                # Agent CLI session file analysis
+│   ├── agent-files-analysis.md               # Cross-tool comparison
+│   ├── agent-integration-guide.md            # Integration guide
+│   ├── claude-session-files.md               # Claude Code session structure
+│   ├── claude-session-file-schema.md         # Claude Code JSON schema
+│   ├── codex-session-files.md                # Codex session structure
+│   ├── codex-session-file-schema.md          # Codex JSON schema
+│   ├── gemini-session-files.md               # Gemini CLI session structure
+│   └── gemini-session-file-schema.md         # Gemini CLI JSON schema
 │
 ├── Git Submodules (Source Code)
-│   ├── mem0/                                # github.com/mem0ai/mem0
-│   ├── letta/                               # github.com/letta-ai/letta
-│   ├── graphiti/                            # github.com/getzep/graphiti
-│   ├── continue/                            # github.com/continuedev/continue
+│   ├── mem0/                                 # github.com/mem0ai/mem0
+│   ├── letta/                                # github.com/letta-ai/letta
+│   ├── graphiti/                             # github.com/getzep/graphiti
+│   ├── hindsight/                            # github.com/vectorize-io/hindsight
+│   ├── mastra/                               # github.com/mastra-ai/mastra
+│   ├── memos/                                # github.com/MemTensor/MemOS
+│   ├── supermemory/                          # github.com/supermemoryai/supermemory
+│   ├── continue/                             # github.com/continuedev/continue
 │   ├── pi-mono/                              # github.com/badlogic/pi-mono
 │   ├── openclaw/                             # github.com/openclaw/openclaw
 │   ├── gemini-cli/                           # github.com/google-gemini/gemini-cli
-│   ├── claude-code-system-prompts/           # github.com/Piebald-AI/claude-code-system-prompts
-│   └── opencode/                             # github.com/anomalyco/opencode
+│   ├── codex-cli/                            # github.com/openai/codex
+│   ├── opencode/                             # github.com/anomalyco/opencode
+│   └── claude-code-system-prompts/           # github.com/Piebald-AI/claude-code-system-prompts
 │
-├── memory.blog.1.chinese.md                 # Memory research blog post (Chinese)
-└── demos/                                   # Experimental implementations
-    └── knowledge-base/                      # ChromaDB vector search demo
+├── memory.blog.1.chinese.md                  # Memory research blog post (Chinese)
+└── demos/                                    # Experimental implementations
+    └── knowledge-base/                       # ChromaDB vector search demo
 ```
 
 ---
@@ -114,6 +138,15 @@ llm-agent-research/
 | `qdrant.research.md` | [Qdrant](https://github.com/qdrant/qdrant) | Filtrable HNSW + sparse vectors + RRF/DBSF hybrid search |
 | `chroma.research.md` | [Chroma](https://github.com/chroma-core/chroma) | Pre-filtering + Rust v1.0 rewrite + developer experience focus |
 
+### Memory Frameworks (Gen 2, 2026 Q1)
+
+| File | Project | Key Innovation |
+|------|---------|----------------|
+| `hindsight.research.md` | [Hindsight](https://github.com/vectorize-io/hindsight) | Four memory networks (World/Experience/Observation) + reflect. MPFP graph traversal. 91.4% LongMemEval |
+| `mastra.research.md` | [Observational Memory (Mastra)](https://mastra.ai/research/observational-memory) | Pure compression, no retrieval. Observer+Reflector agents. 94.87% LongMemEval |
+| `memos.research.md` | [MemOS](https://github.com/MemTensor/MemOS) | Three-layer memory OS (Plaintext/Activation/Parametric). MemCube container |
+| `supermemory.research.md` | [Supermemory](https://github.com/supermemoryai/supermemory) | ASMR: LLM-as-retriever, 3+3 agent pipeline, ensemble voting. 98.6% oracle |
+
 ### Coding Assistants
 
 | File | Project | Key Innovation |
@@ -121,10 +154,6 @@ llm-agent-research/
 | `cursor.research.md` | [Cursor](https://cursor.com) | Custom embeddings trained from agent session traces |
 | `augmentcode.research.md` | [Augment](https://augmentcode.com) | Real-time personal index + edit events (+2.6% improvement) |
 | `continue.research.md` | [Continue](https://github.com/continuedev/continue) | BYOM architecture + content-addressed caching |
-| `memos.research.md` | [MemOS](https://github.com/MemTensor/MemOS) | Three-layer memory OS (Plaintext/Activation/Parametric). MemCube container. Neo4j tree memory. LoRA weight memory is stub |
-| `hindsight.research.md` | [Hindsight](https://github.com/vectorize-io/hindsight) | Four memory networks (World/Experience/Observation/Opinion). MPFP graph traversal. Tempr retain+recall, Cara reflect. 91.4% LongMemEval |
-| `mastra.research.md` | [Observational Memory (Mastra)](https://mastra.ai/research/observational-memory) | Pure compression, no retrieval. Observer+Reflector agents. 94.87% LongMemEval. 10x cost reduction vs RAG |
-| `supermemory.research.md` | [Supermemory](https://github.com/supermemoryai/supermemory) | ASMR: LLM-as-retriever, 3+3 agent pipeline, ensemble voting. Production SDK vs experimental ASMR. 98.6% oracle / 81.6% production |
 
 ### Reverse Engineering
 
@@ -138,9 +167,13 @@ llm-agent-research/
 | File | Content |
 |------|---------|
 | `agent-cli/agent-files-analysis.md` | Cross-tool comparison: Claude Code vs Codex vs Gemini |
+| `agent-cli/agent-integration-guide.md` | Integration guide for agent CLI tools |
 | `agent-cli/claude-session-files.md` | Claude Code: `~/.claude/` structure, JSONL format, plaintext compression |
+| `agent-cli/claude-session-file-schema.md` | Claude Code: detailed JSON schema |
 | `agent-cli/codex-session-files.md` | Codex: `~/.codex/` structure, encrypted JWT compression |
+| `agent-cli/codex-session-file-schema.md` | Codex: detailed JSON schema |
 | `agent-cli/gemini-session-files.md` | Gemini: `~/.gemini/` structure, server-side compression |
+| `agent-cli/gemini-session-file-schema.md` | Gemini: detailed JSON schema |
 
 ---
 
