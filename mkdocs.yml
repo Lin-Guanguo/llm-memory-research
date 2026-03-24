@@ -1,0 +1,103 @@
+site_name: LLM Agent Research
+site_description: Memory, context management, and continuous learning in LLM agents
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+nav:
+  - Home: README.md
+  - Blog:
+    - "2: Agent Context & Memory": blog.2.md
+    - "1: LLM Memory Systems (EN)": blog.1.md
+    - "1: LLM 记忆系统 (CN)": blog.1.chinese.md
+  - Summary:
+    - "Full Synthesis": summary.md
+    - "完整总结 (CN)": summary.chinese.md
+    - "Cross-Domain Findings": findings.md
+  - Memory Research:
+    - "Memory Summary (2025-12)": memory.summary.md
+    - "Memory Summary (2026 Q1)": memory.26Q1.summary.md
+    - "Market & Ecosystem": memory.ecosystem.md
+    - Frameworks (Gen 1):
+      - Mem0: mem0.research.md
+      - Letta: letta.research.md
+      - Graphiti: graphiti.research.md
+    - Frameworks (Gen 2):
+      - Hindsight: hindsight.research.md
+      - "Mastra OM": mastra.research.md
+      - MemOS: memos.research.md
+      - Supermemory: supermemory.research.md
+    - Vector Databases:
+      - Qdrant: qdrant.research.md
+      - Chroma: chroma.research.md
+    - Coding Assistants:
+      - Cursor: cursor.research.md
+      - Augment: augmentcode.research.md
+      - Continue: continue.research.md
+    - "Production Adoption": production-adoption.research.md
+    - "OpenClaw Memory": openclaw-memory.research.md
+  - Context Research:
+    - "Context Summary": context.summary.md
+    - Pi: pi.research.md
+    - OpenClaw: openclaw.research.md
+    - Gemini CLI: gemini-cli.research.md
+    - Claude Code: claude-code-context.research.md
+    - Codex: codex-context.research.md
+    - OpenCode: opencode.research.md
+    - "Anthropic Guidance": anthropic-context-engineering.research.md
+  - Learning Research:
+    - "Learning Summary": learning.summary.md
+    - Neuro-sama: neuro-sama.research.md
+    - Character.AI: character-ai.research.md
+    - "Personality Engineering": personality-engineering.research.md
+    - "Multi-LoRA Serving": multi-lora.research.md
+    - "Hybrid Memory-Weight": hybrid-memory-weight.research.md
+  - Reverse Engineering:
+    - "ChatGPT Memory": reverse-engineer/chatgpt-memory-reverse-engineering.md
+    - "Claude Memory": reverse-engineer/claude-memory-reverse-engineering.md
+  - Agent CLI Analysis:
+    - "Cross-Tool Comparison": agent-cli/agent-files-analysis.md
+    - "Integration Guide": agent-cli/agent-integration-guide.md
+    - "Claude Code Sessions": agent-cli/claude-session-files.md
+    - "Claude Code Schema": agent-cli/claude-session-file-schema.md
+    - "Codex Sessions": agent-cli/codex-session-files.md
+    - "Codex Schema": agent-cli/codex-session-file-schema.md
+    - "Gemini Sessions": agent-cli/gemini-session-files.md
+    - "Gemini Schema": agent-cli/gemini-session-file-schema.md
+  - Plans:
+    - "Context Research": plan/1-context-research.md
+    - "Learning Research": plan/2-learning-research.md
+    - "Memory Update": plan/3-memory-update.md

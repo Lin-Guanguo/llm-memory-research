@@ -10,7 +10,7 @@ A systematic research project studying LLM agent internals: memory implementatio
 
 | Article | Platform | File |
 |---------|----------|------|
-| [LLM记忆：设计很复杂，落地出奇简单](http://xhslink.com/o/7JBMfdnw71i) | 小红书 | `memory.blog.1.chinese.md` |
+| [LLM记忆：设计很复杂，落地出奇简单](http://xhslink.com/o/7JBMfdnw71i) | 小红书 | `blog.1.chinese.md` |
 
 ---
 
@@ -18,7 +18,7 @@ A systematic research project studying LLM agent internals: memory implementatio
 
 1. **Memory** — How agents persist and retrieve knowledge across conversations. See [plan/3-memory-update.md](./plan/3-memory-update.md) for 2026 Q1 update plan (Supermemory, Observational Memory, Hindsight, etc.)
 2. **Context** — How agents assemble and manage context within a conversation (token generation, prompt stitching, token budgeting)
-3. **Learning** (TODO) — Can models learn after deployment? Continual learning, catastrophic forgetting, personalized models via fine-tuning/LoRA. See [plan/2-learning-research.md](./plan/2-learning-research.md) for detailed plan
+3. **Learning** (in progress) — Can models learn after deployment? Continual learning, catastrophic forgetting, personalized models via fine-tuning/LoRA. See [plan/2-learning-research.md](./plan/2-learning-research.md) for detailed plan
 
 ## Summary Documents
 
@@ -31,6 +31,7 @@ A systematic research project studying LLM agent internals: memory implementatio
 | **[memory.26Q1.summary.md](./memory.26Q1.summary.md)** | Memory (2026 Q1) | New projects: Supermemory, Mastra, Hindsight, MemOS. Anti-RAG trend, compression as strategy |
 | **[memory.ecosystem.md](./memory.ecosystem.md)** | Memory | Market overview with GitHub stars, funding, and research priorities |
 | **[context.summary.md](./context.summary.md)** | Context | Cross-project comparison (6 agents), design patterns, open questions |
+| **[learning.summary.md](./learning.summary.md)** | Learning (Pillar 3) | Three personality paradigms (prompt/activation/weight), two production architectures (Neuro-sama vs Character.AI), updated Pillar 3 definition |
 
 ---
 
@@ -40,7 +41,7 @@ A systematic research project studying LLM agent internals: memory implementatio
 llm-agent-research/
 ├── plan/                                     # Research plans
 │   ├── 1-context-research.md                 # Context research plan & steps (completed)
-│   ├── 2-learning-research.md                # Continuous learning research plan (TODO)
+│   ├── 2-learning-research.md                # Continuous learning research plan (in progress)
 │   └── 3-memory-update.md                    # 2026 Q1 memory update plan (research done)
 │
 ├── Summary & Cross-Domain
@@ -50,7 +51,8 @@ llm-agent-research/
 │   ├── memory.summary.md                     # Memory research summary (Phase 1)
 │   ├── memory.26Q1.summary.md                # Memory research summary (2026 Q1)
 │   ├── memory.ecosystem.md                   # Market analysis & priorities
-│   └── context.summary.md                    # Context research summary
+│   ├── context.summary.md                    # Context research summary
+│   └── learning.summary.md                   # Learning (Pillar 3) research summary
 │
 ├── Memory Research (*.research.md)
 │   ├── mem0.research.md                      # Mem0: LLM-driven CRUD memory
@@ -65,7 +67,8 @@ llm-agent-research/
 │   ├── cursor.research.md                    # Cursor: Custom embedding training
 │   ├── augmentcode.research.md               # Augment: Real-time personal index
 │   ├── continue.research.md                  # Continue: Open-source coding assistant
-│   └── production-adoption.research.md       # Production deployment cases
+│   ├── production-adoption.research.md       # Production deployment cases
+│   └── openclaw-memory.research.md           # OpenClaw: Hybrid search + temporal decay + memory flush
 │
 ├── Context Research
 │   ├── pi.research.md                        # Pi: Minimal agent loop & compaction
@@ -75,6 +78,13 @@ llm-agent-research/
 │   ├── codex-context.research.md             # Codex: Dual compaction + per-item truncation
 │   ├── opencode.research.md                  # OpenCode: Two-phase compaction + fork/revert
 │   └── anthropic-context-engineering.research.md  # Anthropic official guidance vs practice
+│
+├── Continuous Learning Research
+│   ├── neuro-sama.research.md               # Neuro-sama: Weight-based personality, iterative fine-tuning
+│   ├── character-ai.research.md             # Character.AI: Meta-character training, DPO + personality constitutions
+│   ├── personality-engineering.research.md   # Personality engineering: prompting vs fine-tuning vs activation engineering
+│   ├── multi-lora.research.md               # Multi-LoRA: Serving (S-LoRA/vLLM), per-user generation, composition
+│   └── hybrid-memory-weight.research.md     # Hybrid memory→weight: 5 architectures, forgetting, production status
 │
 ├── reverse-engineer/                         # Product reverse-engineering
 │   ├── chatgpt-memory-reverse-engineering.md
@@ -154,6 +164,7 @@ llm-agent-research/
 | `cursor.research.md` | [Cursor](https://cursor.com) | Custom embeddings trained from agent session traces |
 | `augmentcode.research.md` | [Augment](https://augmentcode.com) | Real-time personal index + edit events (+2.6% improvement) |
 | `continue.research.md` | [Continue](https://github.com/continuedev/continue) | BYOM architecture + content-addressed caching |
+| `openclaw-memory.research.md` | [OpenClaw](https://github.com/openclaw/openclaw) | Hybrid search (vector + BM25) + temporal decay + MMR. Pre-compaction memory flush bridges context→memory. Most sophisticated memory system among coding agents |
 
 ### Reverse Engineering
 
@@ -184,7 +195,7 @@ llm-agent-research/
 | File | Project | Key Finding |
 |------|---------|-------------|
 | `pi.research.md` | [Pi](https://github.com/badlogic/pi-mono) | Minimal: infinite accumulate → single LLM summary compaction. No pre-send processing, no token budgeting. ~300 word system prompt. Subagent via extension (process isolation) |
-| `openclaw.research.md` | [OpenClaw](https://github.com/openclaw/openclaw) | Multi-stage pipeline: sanitize → validate → truncate → assemble. Pluggable ContextEngine (7 lifecycle hooks). Per-provider turn validation. Built-in subagent via gateway RPC (bidirectional) |
+| `openclaw.research.md` | [OpenClaw](https://github.com/openclaw/openclaw) | Multi-stage pipeline: sanitize → validate → truncate → assemble. Pluggable ContextEngine (7 lifecycle hooks). Per-provider turn validation. Built-in subagent via gateway RPC (bidirectional). See also `openclaw-memory.research.md` for memory system |
 | `gemini-cli.research.md` | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Two-pass verified compression (generate + probe). Tool output pre-summarization with reverse token budget. 50% threshold (aggressive). In-process subagents with fresh chat instance |
 | `codex-context.research.md` | [Codex](https://github.com/openai/codex) | Dual compaction (server encrypted + client LLM). Per-item tool output truncation at record time. Mid-stream compaction. Single flat loop (no sub-agents). Rust implementation. Minimal 4-section compaction prompt |
 | `opencode.research.md` | [OpenCode](https://github.com/anomalyco/opencode) | Two-phase compaction (prune tool outputs + LLM summary). Provider-specific system prompts. Resumable sub-agent sessions. Filesystem-aware fork/revert. Plugin hooks for compaction |
@@ -197,6 +208,20 @@ llm-agent-research/
 | `anthropic-context-engineering.research.md` | Anthropic official guidance | Anthropic's recommendations vs industry practice. Four types of context rot. Three long-horizon strategies (tool result clearing → compaction → sub-agents). Compliance analysis across all studied agents |
 
 See [plan/1-context-research.md](./plan/1-context-research.md) for detailed research plan.
+
+---
+
+## Continuous Learning Research Index
+
+| File | Project | Key Finding |
+|------|---------|-------------|
+| `neuro-sama.research.md` | [Neuro-sama](https://vedal.ai/) | 2B param custom fine-tuned LLM (q2_k). Iterative batch fine-tuning from stream transcripts. Weight-based personality + prompt-based situational context. Closest production analog to continual learning |
+| `character-ai.research.md` | [Character.AI](https://character.ai/) | DPO + personality constitutions for meta-character training. One model generalizes to ANY character. 30K msg/s, 95% KV cache hit. Four-layer system: foundation → character training → prompt → feedback |
+| `personality-engineering.research.md` | Cross-project survey | Three paradigms: prompting (fragile, can't override alignment), fine-tuning (BIG5-CHAT, FinePE MoE-LoRA), activation engineering (PERSONA matches SFT training-free, Anthropic persona vectors). Activation engineering is the emerging middle ground |
+| `multi-lora.research.md` | Multi-LoRA ecosystem | Serving solved (S-LoRA: 2000 adapters/GPU). Per-user adapter generation in <1s (Doc-to-LoRA, Profile-to-PEFT). Composition via TIES/DARE/MoLoRA. Production: Convirza (60+ adapters), Phonely (99.2% accuracy) |
+| `hybrid-memory-weight.research.md` | Hybrid pipeline survey | No production system does full memory→weight. Letta has roadmap. Sparse memory fine-tuning: 11% vs 89% forgetting. Emerging consensus: token-first, weight-second |
+
+See [plan/2-learning-research.md](./plan/2-learning-research.md) for detailed research plan.
 
 ---
 
