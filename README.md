@@ -1,8 +1,10 @@
 # LLM Agent Research
 
-Last Updated: 2026-03-24
+Last Updated: 2026-04-01
 
 A systematic research project studying LLM agent internals: memory implementations and context management across frameworks, products, and agent CLI tools.
+
+Read online: [lin-guanguo.github.io/llm-memory-research](https://lin-guanguo.github.io/llm-memory-research/)
 
 ---
 
@@ -11,6 +13,7 @@ A systematic research project studying LLM agent internals: memory implementatio
 | Article | Platform | File |
 |---------|----------|------|
 | [LLM记忆：设计很复杂，落地出奇简单](http://xhslink.com/o/7JBMfdnw71i) | 小红书 | `blog.1.chinese.md` |
+| [我分析了 6 个主流 Agent 的记忆和上下文](https://www.xiaohongshu.com/discovery/item/69ca6277000000001b02229f) | 小红书 | `blog.2.chinese.md` / `blog.2.md` |
 
 ---
 
@@ -114,9 +117,22 @@ llm-agent-research/
 │   ├── gemini-cli/                           # github.com/google-gemini/gemini-cli
 │   ├── codex-cli/                            # github.com/openai/codex
 │   ├── opencode/                             # github.com/anomalyco/opencode
-│   └── claude-code-system-prompts/           # github.com/Piebald-AI/claude-code-system-prompts
+│   ├── claude-code-system-prompts/           # github.com/Piebald-AI/claude-code-system-prompts
+│   └── claude-code-sourcemap/                # github.com/ChinaSiro/claude-code-sourcemap (v2.1.88 source)
 │
-├── memory.blog.1.chinese.md                  # Memory research blog post (Chinese)
+├── Blog Posts
+│   ├── blog.1.chinese.md                     # Blog #1: LLM记忆 (Chinese)
+│   ├── blog.1.md                             # Blog #1: LLM Memory (English)
+│   ├── blog.2.chinese.md                     # Blog #2: 6 Agent 上下文与记忆对比 (Chinese)
+│   └── blog.2.md                             # Blog #2: Context & Memory comparison (English)
+│
+├── Claude Code Source Analysis
+│   ├── claude-code-sourcemap.research.md     # Core architecture (v2.1.88 source map)
+│   ├── claude-code-swarm.research.md         # Agent Swarm architecture
+│   ├── claude-code-buddy.research.md         # Buddy/Companion architecture
+│   ├── claude-code-buddy.product.research.md # Buddy product design (EN)
+│   └── claude-code-buddy.product.research.chinese.md  # Buddy product design (CN)
+│
 └── demos/                                    # Experimental implementations
     └── knowledge-base/                       # ChromaDB vector search demo
 ```
@@ -172,6 +188,11 @@ llm-agent-research/
 |------|--------|-------------|
 | `reverse-engineer/chatgpt-memory-reverse-engineering.md` | ChatGPT | Pre-computed summaries always injected (33 facts + recent chat summaries) |
 | `reverse-engineer/claude-memory-reverse-engineering.md` | Claude | On-demand tool-based retrieval (`conversation_search`, `recent_chats`) |
+| `claude-code-sourcemap.research.md` | Claude Code (source) | **Source-level analysis** from v2.1.88 source map leak. 4-tier compaction, Sonnet-as-memory-selector, prompt cache architecture, plugin marketplace, coordinator mode |
+| `claude-code-swarm.research.md` | Claude Code (source) | **Agent Swarm architecture**: file-based mailbox (JSON + file lock), 8+ message types (chat/permission/shutdown/sync), 1s polling, idle notification guarantee, centralized permission model, task list coordination |
+| `claude-code-buddy.research.md` | Claude Code (source) | **Buddy/Companion architecture**: side-channel inference, process model, billing separation, prompt cache integration, feature staging infrastructure |
+| `claude-code-buddy.product.research.md` | Claude Code (source) | **Buddy product design analysis** (EN): user needs, interaction model, engagement patterns in a productivity tool |
+| `claude-code-buddy.product.research.chinese.md` | Claude Code (source) | Same as above (CN) |
 
 ### Agent CLI Analysis
 
@@ -205,6 +226,7 @@ llm-agent-research/
 | File | Project | Key Finding |
 |------|---------|-------------|
 | `claude-code-context.research.md` | Claude Code | Server-side API compaction (simplest client). 9-section summary (most detailed). Model-level context awareness (`<budget:token_budget>`). Worker fork inherits full parent context. 65+ modular system prompt files + 20+ dynamic reminders |
+| `claude-code-sourcemap.research.md` | Claude Code (source) | **Source-level verification**: 4-tier compaction (micro→cached→full→snip), prompt cache as first-class concern (section caching, beta latches, in-content reminders), forked agents with shared cache, tool concurrency partitioning |
 | `anthropic-context-engineering.research.md` | Anthropic official guidance | Anthropic's recommendations vs industry practice. Four types of context rot. Three long-horizon strategies (tool result clearing → compaction → sub-agents). Compliance analysis across all studied agents |
 
 See [plan/1-context-research.md](./plan/1-context-research.md) for detailed research plan.

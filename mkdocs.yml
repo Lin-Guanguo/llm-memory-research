@@ -40,7 +40,8 @@ plugins:
 nav:
   - Home: README.md
   - Blog:
-    - "2: Agent Context & Memory": blog.2.md
+    - "2: Agent Context & Memory (EN)": blog.2.md
+    - "2: Agent 上下文与记忆 (CN)": blog.2.chinese.md
     - "1: LLM Memory Systems (EN)": blog.1.md
     - "1: LLM 记忆系统 (CN)": blog.1.chinese.md
   - Summary:
@@ -88,6 +89,12 @@ nav:
   - Reverse Engineering:
     - "ChatGPT Memory": reverse-engineer/chatgpt-memory-reverse-engineering.md
     - "Claude Memory": reverse-engineer/claude-memory-reverse-engineering.md
+    - Claude Code Source Analysis:
+      - "Core Architecture": claude-code-sourcemap.research.md
+      - "Agent Swarm": claude-code-swarm.research.md
+      - "Buddy Architecture": claude-code-buddy.research.md
+      - "Buddy Product Design (EN)": claude-code-buddy.product.research.md
+      - "Buddy 产品设计 (CN)": claude-code-buddy.product.research.chinese.md
   - Agent CLI Analysis:
     - "Cross-Tool Comparison": agent-cli/agent-files-analysis.md
     - "Integration Guide": agent-cli/agent-integration-guide.md
