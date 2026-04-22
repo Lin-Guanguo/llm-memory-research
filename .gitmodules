@@ -43,3 +43,6 @@
 [submodule "claude-code-sourcemap"]
 	path = claude-code-sourcemap
 	url = git@github.com:ChinaSiro/claude-code-sourcemap.git
+[submodule "deer-flow"]
+	path = deer-flow
+	url = git@github.com:bytedance/deer-flow.git
