@@ -1,6 +1,6 @@
 # Cross-Domain Findings: Memory × Context
 
-Last Updated: 2026-03-23
+Last Updated: 2026-04-15
 
 Findings from studying memory implementations (8 projects) and context management (7 agents) in LLM systems.
 
@@ -236,3 +236,47 @@ This suggests RAG's value is in **knowledge-base retrieval** (documentation, pas
 | Prompt placement unvalidated | Gap | Empirical testing needed |
 | Compression + Retrieval as two fundamental ops | Framework | Use to classify and evaluate any memory/context mechanism |
 | Text search dominates over RAG in practice | Observed | RAG for knowledge bases; text search for real-time agent operation |
+| Benchmark scores are backbone-dependent, cross-paper tables invalid | Established (Anatomy 2602.19320) | Require Δ vs Full-Context, matched backbone, LLM-judge, latency |
+| Most engineering systems occupy one corner of the memory cube | Established (Survey 2512.13564) | Broaden coverage on Forms and Functions axes (MemOS, Hindsight are rare outliers) |
+| Memory evolution (retroactive note updates) is an uncovered mechanism | Gap (A-MEM 2502.12110) | Consider retroactive refinement vs full regeneration |
+| Learned memory policies exist (RL-trained GRPO) | New (AgeMem 2601.01885) | First tracked system beyond "prompted LLM" control |
+
+---
+
+## Finding 11: Cross-Paper Benchmark Comparisons Are Mostly Invalid
+
+*Added 2026-04-15 after "Anatomy of Agentic Memory" (arxiv 2602.19320).*
+
+Every cross-system accuracy claim in our research.md files (and in most 2026 memory papers) fails at least one of four validity conditions:
+
+1. **Matched backbone** — same system swings 40+ points on LoCoMo just from gpt-4o-mini → Qwen-2.5-3B. Most tables mix backbones.
+2. **Delta vs Full-Context baseline** — raw scores on a saturated benchmark (LongMemEval-S, LoCoMo both in "Moderate saturation" band) tell you little. Δ = Score_MAG − Score_FullContext is what measures contribution.
+3. **Semantic-aware judging** — F1 on golden spans diverges from LLM-judge semantic utility by up to ~15 points.
+4. **Latency / cost reporting** — hidden cost often dominates. Most papers skip this.
+
+**Claims in our existing research that need methodology asterisks**:
+- Hindsight "91.4% LongMemEval" (backbone-dependent)
+- Supermemory "98.6% oracle" (self-report, no Δ)
+- Mastra "94.87% LongMemEval" (tied to gpt-5-mini)
+- Any MAGMA / LiCoMemory / SimpleMem vs baseline table that mixes backbones
+
+**Action**: add "⚠️ Backbone-dependent, cross-system comparison invalid" note wherever single-number benchmark claims appear without Δ. Apply when building comparison tables in future research.
+
+## Finding 12: The Memory Design Cube Has Underexplored Corners
+
+*Added 2026-04-15 after 2026 Memory Survey (arxiv 2512.13564).*
+
+Organizing our engineering-side research against the survey's three-axis taxonomy (Forms × Functions × Dynamics):
+
+- Nearly all engineering systems (Mem0, Supermemory, ChatGPT, Claude, OpenClaw) occupy ONE corner: **token-level × factual × retrieval-heavy**
+- **Hindsight** is rare in *Function* breadth (factual + experiential + observational)
+- **MemOS** is rare in *Form* breadth (token + parametric + latent)
+- **Letta** is a taxonomy blind spot — its *locus of control* (LLM self-edits memory) has no axis in the framework
+
+Under-explored directions:
+- Parametric memory (adapters / LoRA) — only MemOS
+- Latent memory (hidden state / KV cache as persistent store) — only experimental work
+- Experiential memory (case / strategy / skill) — only Hindsight
+- Learned memory policy — only AgeMem (2026)
+
+These gaps match the "where to look next" list in `plan/4-academic-and-retrieval-research.md`.

@@ -1,6 +1,6 @@
 # LLM Agent Research
 
-Last Updated: 2026-04-01
+Last Updated: 2026-04-15
 
 A systematic research project studying LLM agent internals: memory implementations and context management across frameworks, products, and agent CLI tools.
 
@@ -22,6 +22,7 @@ Read online: [lin-guanguo.github.io/llm-memory-research](https://lin-guanguo.git
 1. **Memory** — How agents persist and retrieve knowledge across conversations. See [plan/3-memory-update.md](./plan/3-memory-update.md) for 2026 Q1 update plan (Supermemory, Observational Memory, Hindsight, etc.)
 2. **Context** — How agents assemble and manage context within a conversation (token generation, prompt stitching, token budgeting)
 3. **Learning** (in progress) — Can models learn after deployment? Continual learning, catastrophic forgetting, personalized models via fine-tuning/LoRA. See [plan/2-learning-research.md](./plan/2-learning-research.md) for detailed plan
+4. **Academic Memory & Retrieval Layer** (planned) — Paper-side memory architectures (A-Mem, HippoRAG, EM-LLM, Generative Agents) and retrieval internals (chunking, ColBERT, rerankers). See [plan/4-academic-and-retrieval-research.md](./plan/4-academic-and-retrieval-research.md)
 
 ## Summary Documents
 
@@ -35,6 +36,10 @@ Read online: [lin-guanguo.github.io/llm-memory-research](https://lin-guanguo.git
 | **[memory.ecosystem.md](./memory.ecosystem.md)** | Memory | Market overview with GitHub stars, funding, and research priorities |
 | **[context.summary.md](./context.summary.md)** | Context | Cross-project comparison (6 agents), design patterns, open questions |
 | **[learning.summary.md](./learning.summary.md)** | Learning (Pillar 3) | Three personality paradigms (prompt/activation/weight), two production architectures (Neuro-sama vs Character.AI), updated Pillar 3 definition |
+| **[memory.academic.summary.md](./memory.academic.summary.md)** | Memory (academic side) | 2026 taxonomy (Forms × Functions × Dynamics), methodology critique (Anatomy), 3 architectural trends (MAGMA / LiCoMemory / SimpleMem), Dayfold implications |
+| **[retrieval.summary.md](./retrieval.summary.md)** | Retrieval layer | Chunking / embeddings / pipeline architecture / production stacks synthesis; 2026 default RAG stack |
+| **[memory.literature-scan.md](./memory.literature-scan.md)** | Memory (academic scan) | Tier 1 (2026) / Tier 2 (2025) / Tier 3 (pre-2025) triage with arxiv links |
+| **[memory.skim-summaries.md](./memory.skim-summaries.md)** | Memory (academic skim) | 7 papers × ~500 words: Du survey, graph-memory survey, A-MAC, A-MEM, Memoria, AgeMem, TTT |
 
 ---
 
@@ -45,7 +50,8 @@ llm-agent-research/
 ├── plan/                                     # Research plans
 │   ├── 1-context-research.md                 # Context research plan & steps (completed)
 │   ├── 2-learning-research.md                # Continuous learning research plan (in progress)
-│   └── 3-memory-update.md                    # 2026 Q1 memory update plan (research done)
+│   ├── 3-memory-update.md                    # 2026 Q1 memory update plan (research done)
+│   └── 4-academic-and-retrieval-research.md  # Academic memory papers + retrieval/embedding layer (planned)
 │
 ├── Summary & Cross-Domain
 │   ├── summary.md                            # Full research synthesis (EN)
@@ -56,6 +62,23 @@ llm-agent-research/
 │   ├── memory.ecosystem.md                   # Market analysis & priorities
 │   ├── context.summary.md                    # Context research summary
 │   └── learning.summary.md                   # Learning (Pillar 3) research summary
+│
+├── Academic Memory Deep Dives (*.research.md, 2026 papers)
+│   ├── memory-survey-2026.research.md        # Memory in the Age of AI Agents (2512.13564) — 3-axis taxonomy
+│   ├── memory-anatomy.research.md            # Anatomy of Agentic Memory (2602.19320) — methodology critique
+│   ├── magma.research.md                     # MAGMA (2601.03236) — four orthogonal graphs
+│   ├── licomemory.research.md                # LiCoMemory (2511.01448) — CogniGraph semantic index
+│   ├── simplemem.research.md                 # SimpleMem (2601.02553) — three-stage compression
+│   ├── a-mem.research.md                     # A-MEM (2502.12110) — Zettelkasten + metadata evolution
+│   └── agemem.research.md                    # AgeMem (2601.01885) — RL-trained GRPO memory policy
+│
+├── Retrieval Layer Research
+│   ├── retrieval/chunking.research.md        # Text chunking strategies (fixed/recursive/semantic/late/agentic)
+│   ├── retrieval/embedding-models.research.md # Dense/ColBERT/Matryoshka/SPLADE/rerankers/2026 frontier
+│   ├── retrieval/retrieval-architecture.research.md # Hybrid/HyDE/rerank/agentic/GraphRAG/long-context
+│   └── retrieval/production-stacks.research.md # LlamaIndex/LangChain/Haystack/Vespa comparison
+│
+├── papers/pdfs/                              # Archived arxiv PDFs (13 papers)
 │
 ├── Memory Research (*.research.md)
 │   ├── mem0.research.md                      # Mem0: LLM-driven CRUD memory
