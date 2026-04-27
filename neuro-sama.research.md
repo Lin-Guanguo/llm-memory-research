@@ -1,12 +1,14 @@
 # Neuro-sama: Weight-Based Personality in Production
 
-Last Updated: 2026-03-24
+Last Updated: 2026-04-27
 
 ## Overview
 
 Neuro-sama is an AI VTuber created by pseudonymous developer Vedal (Vedal987), and one of the most-watched VTubers on Twitch. She is notable as arguably the only production system where personality is intentionally embedded in model weights via fine-tuning, rather than relying solely on prompt engineering.
 
 This makes Neuro-sama a unique case study for continuous learning research: it demonstrates an **iterative batch fine-tuning** pipeline where real deployment interactions feed back into training data.
+
+The more recent VedalAI public repositories add a second, equally important lesson: Neuro-sama is not just a chat model with a VTuber shell. The public game integrations point to a **layered embodied-agent architecture**: a personality model produces low-entropy text commands, the Neuro API constrains those commands into typed actions, and game-specific controllers validate and execute the low-level behavior.
 
 ## History & Evolution
 
@@ -20,7 +22,7 @@ This makes Neuro-sama a unique case study for continuous learning research: it d
 | Mar 2023 | **Evil Neuro** introduced as a separate personality/"sister". Vedal begins work on moving away from OpenAI API |
 | Mid 2023 | Transition to **custom fine-tuned model** based on open-source LLM. Custom TTS voice model trained |
 | 2024 | Continuous iteration on custom model. Multiple retraining cycles. Improved game-playing (Minecraft) and multi-modal integration (vision). Neuro × Evil Neuro dual-model interactions become a staple |
-| Early 2025 | Model confirmed as **2B parameters with q2_k quantization**. "Airis" remains the internal codename |
+| Early 2025 | Community lore starts repeating **2B parameters with q2_k quantization**, but no verifiable primary source has been found. "Airis" remains the internal codename |
 
 ### Why "Airis" Was Renamed
 
@@ -47,16 +49,16 @@ Neuro-sama is a multi-component pipeline, not a single model:
                    ▼
 ┌──────────────────────────────────────────────────┐
 │           Custom Fine-Tuned LLM                  │
-│     2B params, q2_k quantization (2025)          │
+│     small custom model (2B/q2_k unverified)      │
 │     Personality embedded in weights              │
 │     + system prompt for situational context      │
-└──────┬───────────────────────────┬───────────────┘
-       │                           │
-       ▼                           ▼
+└──────┬───────────────────────────┬────────────────┐
+       │                           │                │
+       ▼                           ▼                ▼
 ┌──────────────┐          ┌────────────────────────┐
-│  TTS Engine  │          │   Game Playing Agents   │
+│  TTS Engine  │          │   Neuro API Action Bus  │
 │ Azure "Ashley"│          │  (osu!, Minecraft,     │
-│ pitched +25% │          │   Pokémon, etc.)        │
+│ pitched +25% │          │   SDK integrations)     │
 └──────┬───────┘          └────────────────────────┘
        │
        ▼
@@ -70,14 +72,16 @@ Neuro-sama is a multi-component pipeline, not a single model:
 
 | Spec | Value | Source |
 |------|-------|--------|
-| Parameter count | **2B** | Vedal (early 2025) |
-| Quantization | **q2_k** (GGUF) | Vedal (early 2025) |
+| Parameter count | **~2B (UNVERIFIED)** | Widely repeated in Fandom Wiki and secondary sources, attributed to a Vedal stream in early 2025 but **no verifiable primary source** (no archived stream timestamp / screenshot). NOT mentioned on Wikipedia. |
+| Quantization | **q2_k (UNVERIFIED, same source chain as above)** | Same as above — treat as community claim not primary disclosure |
 | Base model | Undisclosed. Community speculation: LLaMA family | — |
 | Training data | Twitch stream interactions, curated by Vedal. Uses data from his own interactions and others with express permission | [Vedal, Threads](https://www.threads.com/@sinisterpixel/post/DEa_XlXoKjK) |
 | Fine-tuning method | Likely LoRA (mentioned on stream), possibly full fine-tune | Vedal (stream) |
 | Inference | Self-hosted, Vedal's own GPUs | Vedal (stream) |
 
-**Key observation: 2B parameters with q2_k is aggressively small.** This suggests Vedal prioritizes inference latency (real-time streaming demands ~1-3s response time) over raw capability. The personality must compensate through fine-tuning quality rather than model scale.
+**Source warning on 2B + q2_k**: Web search audit (2026-04) found these numbers trace back to Fandom Wikis only. Search result summarizers repeatedly paraphrase "Vedal said 2B + q2_k in early 2025" but direct-fetch of Wikipedia shows no such claim. Fandom wiki returned 403 on direct fetch — could not verify citation. **Until a primary source is located (archived stream link with timestamp, or official screenshot), treat this as unverified community lore.**
+
+**If true, 2B + q2_k is aggressively small.** A model this size at this quantization would struggle to maintain complex character traits via prompt alone. The personality would have to come from fine-tuning quality rather than model scale, and Vedal would be prioritizing inference latency (streaming needs ~1-3s response) over raw capability. But this analysis is only meaningful if the underlying claim is true.
 
 ### TTS Pipeline
 
@@ -98,6 +102,66 @@ Neuro-sama is a multi-component pipeline, not a single model:
 - Some indications of retrieval-based memory (RAG-like) for cross-session facts, but not publicly documented
 - Vedal has described memory as an ongoing challenge and area of active work
 
+## Public VedalAI Repositories: Layered Agency
+
+The public VedalAI repositories are more useful for understanding Neuro-sama's **action architecture** than her private LLM internals. They show a recurring pattern: keep the main model's output simple, typed, and easy to validate; move execution into game-specific downstream systems.
+
+### Neuro SDK: Typed Action Protocol
+
+The official [VedalAI/neuro-sdk](https://github.com/VedalAI/neuro-sdk) is a websocket protocol, not a general agent framework. It exposes three core primitives:
+
+- **Context**: the game sends plaintext information about what is happening.
+- **Registered actions**: the game declares action names, natural-language descriptions, and JSON schemas.
+- **Forced actions**: the game asks Neuro to choose one of a constrained set of actions, optionally with current state and a query.
+
+The API documentation explicitly says action descriptions, schemas, state, queries, and action-result messages are directly received by Neuro. Neuro then sends back an action name plus JSON-stringified data, and the game is responsible for validation and execution.
+
+This is a sharper claim than "text-in/text-out": Neuro is acting as a **high-level action selector**. The game compiles rich state into text or JSON, Neuro selects a typed command, and the downstream integration compiles that command into concrete UI, keyboard, controller, or game-engine operations.
+
+The SDK README also makes the boundary explicit: turn-based games work best, while games with non-low APM generally require Neuro to control only high-level actions and let another system handle low-level actions.
+
+### Inscryption: State Serializer to Mouse Automation
+
+[VedalAI/neuro-inscryption](https://github.com/VedalAI/neuro-inscryption) is the clearest example of the typed-action loop:
+
+- Harmony patches hook into game events such as choosing a card, selecting a map path, or placing a card in a lane.
+- The mod builds structured game state such as combat state, hand contents, item options, map options, and card descriptions.
+- `Decision` creates an action window, attaches a forced action query, serializes state, and waits for Neuro's response.
+- `ActionBase` and schema validation keep Neuro's output inside allowed choices.
+- `NeuroMouse` performs the low-level click sequence after a valid high-level choice is returned.
+
+In other words, the LLM does not "play Inscryption" directly. It chooses among constrained game actions. The integration layer executes the embodied behavior.
+
+### Among Us: Trained Controller Plus Deterministic Solvers
+
+[VedalAI/neuro-amongus](https://github.com/VedalAI/neuro-amongus) is the strongest public evidence that "Neuro-sama plays games" can mean more than an LLM loop. The README states the plan: record data from the game, then use it to train a neural network for Neuro.
+
+The AI code implements an LSTM model over recorded game-state frames. Its outputs include movement directions plus action flags such as report, vent, and kill. A local socket server loads the trained model, receives frames from the game plugin, and returns an `NnOutput` protobuf. The C# plugin then maps those outputs into movement and button clicks.
+
+The repository also contains deterministic support systems:
+
+- pathfinding and fallback movement when the learned controller gets stuck
+- minigame solvers registered by minigame type
+- event-driven movement suggestions, such as moving toward a dead body or an emergency button
+
+This is not just personality training. It is a hybrid embodied stack: supervised sequence model for movement/action policy, deterministic solvers for precise UI tasks, and game-specific perception/recording code.
+
+### Cyberpunk 2077: Delegating to Game Systems
+
+[VedalAI/neuro-cyberpunk](https://github.com/VedalAI/neuro-cyberpunk) shows the same pattern in a more complex real-time game. The plugin registers high-level actions such as querying quests and inventory, selecting dialogue choices, selecting SMS replies, running quickhacks, summoning a car, and driving to a waypoint.
+
+The execution layer is not an LLM. The plugin serializes available choices or quickhack targets, sends context or forced actions to Neuro, validates the selected IDs, and then invokes Redscript methods, injects keypress chains, dispatches quickhacks, or starts an in-game autonomous driving command.
+
+This makes Cyberpunk a useful example of **delegated embodiment**: Neuro supplies intent; the game integration and native game systems supply actuation.
+
+### Swarm Control: Audience Control Plane, Not LLM Subagents
+
+[VedalAI/swarm-control](https://github.com/VedalAI/swarm-control) is easy to overread. It is not public evidence for an LLM subagent cluster. It is a Twitch Extension/backend/game websocket system for Subnautica-style crowd control.
+
+The repo models carts, transactions, orders, Twitch Bits receipts, and redeems. The backend validates prepurchase/transaction flow, sends redeem messages over a game websocket, and tracks order states. The game message source enum includes `Swarm`, and there is a special PiShock redeem handler that bypasses the game and calls PiShock directly.
+
+So "swarm" here is better understood as an **audience/event swarm**: viewer actions flow through a live-event control plane into game effects or external devices. It is adjacent to the agent architecture because it is another downstream execution surface, but it should not be described as an LLM subagent swarm without more evidence.
+
 ## The Core Question: Weights vs. Prompts
 
 This is the most research-relevant aspect of Neuro-sama.
@@ -108,13 +172,13 @@ In GPT-3 era (v2), personality was **entirely prompt-based**. In the custom mode
 
 ### Evidence For Weight-Based Personality
 
-1. **2B q2_k model produces consistent personality** — a model this small with this aggressive quantization would struggle to maintain complex character traits from prompt alone. The personality consistency observed on stream suggests it's in the weights.
+1. **Model is reportedly small (2B q2_k, UNVERIFIED)** — IF the small-model claim is true, a model this size at this quantization would struggle to maintain complex character traits from prompt alone, so observed personality consistency would have to come from weights. But this argument is contingent on the size claim being accurate, which is itself sourced only from community lore.
 2. **Training data from interactions** — Vedal curates training data from stream transcripts, directly encoding conversational style into the model.
 3. **Vedal's explicit statements** — he has distinguished his approach from prompt-only AI characters in interviews.
 
 ### Evidence Against (or Nuance)
 
-1. **Evil Neuro complicates the picture** — Evil Neuro uses the "same base AI" with adjusted "prompting style and safety settings." If personality were purely in weights, you'd need a separate fine-tune. The fact that prompt changes produce a distinct personality suggests prompts still play a significant role.
+1. **Evil Neuro complicates the picture** — Community-repeated claim is that Evil Neuro uses the "same base AI" with adjusted prompting style and safety settings. This specific phrasing is itself community lore, not confirmed as Vedal's direct quote. If the claim is true: personality purely in weights would require a separate fine-tune, so prompt changes producing a distinct personality would suggest prompts still play a significant role.
 2. **System prompts are still used** — even with weight-based personality, situational prompts shape behavior substantially.
 3. **Community replication via prompt-only** — open-source projects (kimjammer/Neuro, Open-LLM-VTuber) achieve passable Neuro-sama-like behavior through prompt engineering alone, suggesting the boundary is fuzzy.
 
@@ -185,7 +249,7 @@ Key characteristics:
 
 Neuro-sama is the closest thing to a production **weight-level personalization** system:
 
-1. It proves that small models (2B) can carry personality through fine-tuning
+1. It suggests small models may carry personality through fine-tuning, if the 2B community claim is accurate
 2. The iterative retraining loop is a primitive form of continual learning
 3. The human curation step is the critical bottleneck — automating this is where academic continual learning research becomes relevant
 4. The hybrid weights+prompts approach matches the "Pillar 3" hypothesis in findings.md: future systems will combine external memory (facts) with weight updates (personality/style)
@@ -242,7 +306,7 @@ All open-source recreations focus on **pipeline engineering** — stitching toge
 
 - **Not a recreation** — Vedal's official SDK for game integration with Neuro-sama
 - WebSocket-based protocol, with SDKs for Unity, Godot, + community ports (Rust, JS, Python, etc.)
-- Reveals Neuro's game interface is **text-in/text-out**: games describe state as text, Neuro returns text-based actions
+- Reveals Neuro's game interface is a **typed high-level action protocol**: games describe state, register action schemas, and execute validated action responses
 - Works best for **turn-based games** (Inscryption, Buckshot Roulette). Real-time games need high-level action abstraction
 - Tells us nothing about LLM internals, but confirms the system's external API contract
 
@@ -254,7 +318,7 @@ All open-source recreations focus on **pipeline engineering** — stitching toge
 | Fine-tuning | Yes (iterative) | No | No | No | No |
 | Cross-session memory | Unclear/limited | None | None | WIP (DuckDB + PGVector) | None |
 | Game playing | Yes (per-game agents) | No | No | Yes (Minecraft, Factorio) | No |
-| Model | Custom 2B | Any (pluggable) | LLAMA 3 8B | Any (pluggable) | Phi-3-mini |
+| Model | Custom small model (2B unverified) | Any (pluggable) | LLAMA 3 8B | Any (pluggable) | Phi-3-mini |
 | Offline capable | Yes | Yes | Yes | Partial (needs API or local) | Yes |
 | Maturity | Production | Stable | Archived | Alpha | Active |
 
@@ -268,7 +332,9 @@ All open-source recreations focus on **pipeline engineering** — stitching toge
 
 4. **Nobody attempts iterative learning.** Zero projects implement the deploy → collect → retrain cycle. The gap between "pipeline that uses an LLM" and "system that learns from interactions" remains wide in the open-source community.
 
-5. **The official SDK confirms text-based game interface.** Neuro-sama's game integration is not low-level (raw pixel input → actions). It's a high-level text protocol: game state described in text, Neuro responds with text actions. This means the LLM is doing **reasoning over game state descriptions**, not playing games in the reinforcement learning sense.
+5. **The official SDK confirms a typed high-level action interface.** Neuro-sama's game integration is not low-level raw control by the LLM. Games describe state and register action schemas; Neuro returns action names plus JSON data; downstream integrations validate and execute. This means the LLM is doing **reasoning over constrained game-state descriptions**, while game-specific controllers handle embodiment.
+
+6. **The public VedalAI repos are stronger evidence for layered agency than for "subagent swarm."** `neuro-inscryption`, `neuro-amongus`, and `neuro-cyberpunk` all split high-level intent from low-level actuation. `swarm-control` is a livestream audience/event control plane, not an LLM agent cluster.
 
 ## Open Questions
 
@@ -284,14 +350,17 @@ All open-source recreations focus on **pipeline engineering** — stitching toge
 
 ## Key Takeaway
 
-Neuro-sama is not true continual learning — it's **iterative supervised fine-tuning with human-curated data from deployment**. But it's the closest production analog:
+Neuro-sama is not true continual learning — it's **iterative supervised fine-tuning with human-curated data from deployment**. But it is the closest production analog:
 
 - It demonstrates the full loop: deploy → collect interaction data → curate → retrain → redeploy
-- It proves weight-based personality is viable at small scale (2B params)
+- It suggests weight-based personality is viable at small scale, if the community 2B-parameter claim is accurate
 - The bottleneck is human curation, which is exactly what continual learning research aims to automate
 - The hybrid weights+prompts approach is likely the practical optimum, not pure weight-based personality
+- The public integrations show a second moat: personality is only one layer. The rest of the system is an action protocol plus game-specific embodied controllers.
 
 For the research project, Neuro-sama bridges the gap between Pillar 1 (Memory: external storage) and the hypothetical Pillar 3 (Learning: weight updates). It shows what a primitive, human-in-the-loop version of Pillar 3 looks like in production.
+
+It also widens the research frame: a character agent is not only a model-training problem. In production, the convincing "person" emerges from the combination of weight-level personality, situational prompting, typed action protocols, downstream controllers, and livestream event surfaces.
 
 ## References
 
@@ -299,7 +368,11 @@ For the research project, Neuro-sama bridges the gap between Pillar 1 (Memory: e
 - [Vedal AI official site](https://vedal.ai/)
 - [Vedal's Interview: Neuro-sama's New Model (Internet Archive)](https://archive.org/details/vedals-interview-neuro-samas-new-model-and-the-ai-system-behind-her-yy-9-of-46w-4-a)
 - [Vedal on training data sourcing (Threads)](https://www.threads.com/@sinisterpixel/post/DEa_XlXoKjK)
-- [VedalAI/neuro-sdk (GitHub)](https://github.com/VedalAI/neuro-sdk) — official game integration SDK
+- [VedalAI/neuro-sdk (GitHub)](https://github.com/VedalAI/neuro-sdk) (accessed: 2026-04-27) — official game integration SDK
+- [VedalAI/neuro-inscryption (GitHub)](https://github.com/VedalAI/neuro-inscryption) (accessed: 2026-04-27) — official Inscryption integration
+- [VedalAI/neuro-amongus (GitHub)](https://github.com/VedalAI/neuro-amongus) (accessed: 2026-04-27) — Among Us controller and training code
+- [VedalAI/neuro-cyberpunk (GitHub)](https://github.com/VedalAI/neuro-cyberpunk) (accessed: 2026-04-27) — Cyberpunk 2077 integration
+- [VedalAI/swarm-control (GitHub)](https://github.com/VedalAI/swarm-control) (accessed: 2026-04-27) — Twitch Extension / audience control plane
 
 ### Reference & Wiki
 - [Neuro-sama Wikipedia](https://en.wikipedia.org/wiki/Neuro-sama)
