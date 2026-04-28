@@ -1,6 +1,6 @@
 # LLM Agent Research
 
-Last Updated: 2026-04-15
+Last Updated: 2026-04-28
 
 A systematic research project studying LLM agent internals: memory implementations and context management across frameworks, products, and agent CLI tools.
 
@@ -23,6 +23,7 @@ Read online: [lin-guanguo.github.io/llm-memory-research](https://lin-guanguo.git
 2. **Context** — How agents assemble and manage context within a conversation (token generation, prompt stitching, token budgeting)
 3. **Learning** (in progress) — Can models learn after deployment? Continual learning, catastrophic forgetting, personalized models via fine-tuning/LoRA. See [plan/2-learning-research.md](./plan/2-learning-research.md) for detailed plan
 4. **Academic Memory & Retrieval Layer** (planned) — Paper-side memory architectures (A-Mem, HippoRAG, EM-LLM, Generative Agents) and retrieval internals (chunking, ColBERT, rerankers). See [plan/4-academic-and-retrieval-research.md](./plan/4-academic-and-retrieval-research.md)
+5. **Prompt Engineering** (planned) — Prompt paradigms as behavior control: which prompt patterns work, where they fail, and when to move constraints into schema, validators, evals, or learning. See [plan/5-prompt-engineering-research.md](./plan/5-prompt-engineering-research.md) for detailed plan
 
 ## Summary Documents
 
@@ -51,7 +52,8 @@ llm-agent-research/
 │   ├── 1-context-research.md                 # Context research plan & steps (completed)
 │   ├── 2-learning-research.md                # Continuous learning research plan (in progress)
 │   ├── 3-memory-update.md                    # 2026 Q1 memory update plan (research done)
-│   └── 4-academic-and-retrieval-research.md  # Academic memory papers + retrieval/embedding layer (planned)
+│   ├── 4-academic-and-retrieval-research.md  # Academic memory papers + retrieval/embedding layer (planned)
+│   └── 5-prompt-engineering-research.md      # Prompt paradigms and behavior-control boundaries (planned)
 │
 ├── Summary & Cross-Domain
 │   ├── summary.md                            # Full research synthesis (EN)
