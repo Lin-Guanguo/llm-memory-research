@@ -1,6 +1,6 @@
 # LLM Agent Research
 
-Last Updated: 2026-04-28
+Last Updated: 2026-04-30
 
 A systematic research project studying LLM agent internals: memory implementations and context management across frameworks, products, and agent CLI tools.
 
@@ -15,6 +15,12 @@ Read online: [lin-guanguo.github.io/llm-memory-research](https://lin-guanguo.git
 | [LLM记忆：设计很复杂，落地出奇简单](http://xhslink.com/o/7JBMfdnw71i) | 小红书 | `blog.1.chinese.md` |
 | [我分析了 6 个主流 Agent 的记忆和上下文](https://www.xiaohongshu.com/discovery/item/69ca6277000000001b02229f) | 小红书 | `blog.2.chinese.md` / `blog.2.md` |
 
+## Draft Articles
+
+| Article | Status | File |
+|---------|--------|------|
+| Prompt Engineering 现在还重要吗？ | First draft | `blog.5.chinese.md` |
+
 ---
 
 ## Research Directions
@@ -23,7 +29,7 @@ Read online: [lin-guanguo.github.io/llm-memory-research](https://lin-guanguo.git
 2. **Context** — How agents assemble and manage context within a conversation (token generation, prompt stitching, token budgeting)
 3. **Learning** (in progress) — Can models learn after deployment? Continual learning, catastrophic forgetting, personalized models via fine-tuning/LoRA. See [plan/2-learning-research.md](./plan/2-learning-research.md) for detailed plan
 4. **Academic Memory & Retrieval Layer** (planned) — Paper-side memory architectures (A-Mem, HippoRAG, EM-LLM, Generative Agents) and retrieval internals (chunking, ColBERT, rerankers). See [plan/4-academic-and-retrieval-research.md](./plan/4-academic-and-retrieval-research.md)
-5. **Prompt Engineering** (planned) — Prompt paradigms as behavior control: which prompt patterns work, where they fail, and when to move constraints into schema, validators, evals, or learning. See [plan/5-prompt-engineering-research.md](./plan/5-prompt-engineering-research.md) for detailed plan
+5. **Prompt Engineering** (in progress) — Prompt paradigms as behavior control: which prompt patterns work, where they fail, and when to move constraints into schema, validators, evals, or learning. See [prompt-engineering.research.md](./prompt-engineering.research.md) and [plan/5-prompt-engineering-research.md](./plan/5-prompt-engineering-research.md)
 
 ## Summary Documents
 
@@ -37,7 +43,8 @@ Read online: [lin-guanguo.github.io/llm-memory-research](https://lin-guanguo.git
 | **[memory.ecosystem.md](./memory.ecosystem.md)** | Memory | Market overview with GitHub stars, funding, and research priorities |
 | **[context.summary.md](./context.summary.md)** | Context | Cross-project comparison (6 agents), design patterns, open questions |
 | **[learning.summary.md](./learning.summary.md)** | Learning (Pillar 3) | Three personality paradigms (prompt/activation/weight), two production architectures (Neuro-sama vs Character.AI), updated Pillar 3 definition |
-| **[memory.academic.summary.md](./memory.academic.summary.md)** | Memory (academic side) | 2026 taxonomy (Forms × Functions × Dynamics), methodology critique (Anatomy), 3 architectural trends (MAGMA / LiCoMemory / SimpleMem), Dayfold implications |
+| **[prompt-engineering.research.md](./prompt-engineering.research.md)** | Prompt Engineering | Long-form research source draft: evidence map, prompt-control taxonomy, mechanism notes, prompt ceiling, production case bank, eval plan |
+| **[memory.academic.summary.md](./memory.academic.summary.md)** | Memory (academic side) | 2026 taxonomy (Forms × Functions × Dynamics), methodology critique (Anatomy), 3 architectural trends (MAGMA / LiCoMemory / SimpleMem), production implications |
 | **[retrieval.summary.md](./retrieval.summary.md)** | Retrieval layer | Chunking / embeddings / pipeline architecture / production stacks synthesis; 2026 default RAG stack |
 | **[memory.literature-scan.md](./memory.literature-scan.md)** | Memory (academic scan) | Tier 1 (2026) / Tier 2 (2025) / Tier 3 (pre-2025) triage with arxiv links |
 | **[memory.skim-summaries.md](./memory.skim-summaries.md)** | Memory (academic skim) | 7 papers × ~500 words: Du survey, graph-memory survey, A-MAC, A-MEM, Memoria, AgeMem, TTT |
@@ -63,7 +70,8 @@ llm-agent-research/
 │   ├── memory.26Q1.summary.md                # Memory research summary (2026 Q1)
 │   ├── memory.ecosystem.md                   # Market analysis & priorities
 │   ├── context.summary.md                    # Context research summary
-│   └── learning.summary.md                   # Learning (Pillar 3) research summary
+│   ├── learning.summary.md                   # Learning (Pillar 3) research summary
+│   └── prompt-engineering.research.md         # Prompt paradigms and behavior-control boundaries
 │
 ├── Academic Memory Deep Dives (*.research.md, 2026 papers)
 │   ├── memory-survey-2026.research.md        # Memory in the Age of AI Agents (2512.13564) — 3-axis taxonomy
@@ -149,7 +157,8 @@ llm-agent-research/
 │   ├── blog.1.chinese.md                     # Blog #1: LLM记忆 (Chinese)
 │   ├── blog.1.md                             # Blog #1: LLM Memory (English)
 │   ├── blog.2.chinese.md                     # Blog #2: 6 Agent 上下文与记忆对比 (Chinese)
-│   └── blog.2.md                             # Blog #2: Context & Memory comparison (English)
+│   ├── blog.2.md                             # Blog #2: Context & Memory comparison (English)
+│   └── blog.5.chinese.md                     # Blog #5 draft: Prompt Engineering 现在还重要吗？
 │
 ├── Claude Code Source Analysis
 │   ├── claude-code-sourcemap.research.md     # Core architecture (v2.1.88 source map)
